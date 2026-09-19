@@ -1,0 +1,50 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the accompanying paper (in preparation) and the upstream normative-modelling platforms it wraps."
+title: "normreport: multi-backend normative brain-morphometry report generator"
+version: 0.1.0
+date-released: 2026-09-19
+authors:
+  - alias: phindagijimana
+license: MIT
+repository-code: "https://github.com/phindagijimana/normative"
+type: software
+keywords:
+  - neuroimaging
+  - normative-modeling
+  - brain-morphometry
+  - epilepsy
+  - clinical-decision-support
+references:
+  - type: article
+    authors:
+      - family-names: Ge
+        given-names: Ruiyang
+      - family-names: Frangou
+        given-names: Sophia
+    title: "Normative modelling of brain morphometry across the lifespan with CentileBrain"
+    journal: "Lancet Digital Health"
+    volume: 6
+    issue: 3
+    year: 2024
+    doi: 10.1016/S2589-7500(23)00250-9
+  - type: article
+    authors:
+      - family-names: Rutherford
+        given-names: Saige
+      - family-names: Marquand
+        given-names: Andre F.
+    title: "The normative modeling framework for computational psychiatry"
+    journal: "Nature Protocols"
+    volume: 17
+    year: 2022
+    doi: 10.1038/s41596-022-00696-5
+  - type: article
+    authors:
+      - family-names: Taylor
+        given-names: Peter
+    title: "IDEAS — Imaging Database for Epilepsy and Surgery"
+    journal: "Epilepsia"
+    volume: 66
+    issue: 2
+    year: 2025
+    doi: 10.1111/epi.18192

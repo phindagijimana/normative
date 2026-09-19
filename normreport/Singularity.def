@@ -1,0 +1,55 @@
+Bootstrap: docker
+From: rocker/r-ver:4.3.2
+
+%labels
+    Maintainer phindagijimana
+    Version    0.1.0
+    Purpose    Multi-backend normative brain-morphometry report generator
+
+%post
+    set -eux
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        python3 python3-pip python3-dev \
+        libcurl4-openssl-dev libssl-dev libxml2-dev \
+        libcairo2-dev libxt-dev \
+        git ca-certificates
+    rm -rf /var/lib/apt/lists/*
+
+    # R packages needed by the CentileBrain scoring scripts
+    R -e "install.packages(c('mfp', 'gamlss', 'gamlss.dist'), \
+          repos='https://cloud.r-project.org')"
+
+    # Python deps
+    pip3 install --no-cache-dir --break-system-packages \
+        pandas numpy scipy matplotlib reportlab click pytest
+
+    # normreport package (mount host repo at /opt/normative)
+    mkdir -p /opt/normreport
+    # (during build we don't copy the source; runtime uses bind-mount)
+
+%environment
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+    export R_LIBS_USER=/usr/local/lib/R/site-library
+
+%runscript
+    # Expects the normative repo bind-mounted at /work
+    # Usage:
+    #   singularity run --bind /path/to/normative:/work \
+    #       normreport.sif /work/normreport/examples/demo_subject_stats.csv \
+    #       --age 22 --sex M --output /tmp/normreport_out
+    exec python3 -m normreport.cli "$@"
+
+%help
+    normreport — multi-backend normative brain-morphometry report generator.
+    Wraps CentileBrain-MFP + CentileBrain-GAMLSS + PCN Toolkit-Bayesian
+    backends in a single per-patient PDF report with cross-backend
+    consensus/disagreement flagging.
+
+    Build:  sudo singularity build normreport.sif Singularity.def
+    Run:    singularity run --bind $(pwd):/work normreport.sif \
+                /work/examples/demo_subject_stats.csv \
+                --age 22 --sex M --output /tmp/out
+
+    For research use only. See README.md for full documentation.

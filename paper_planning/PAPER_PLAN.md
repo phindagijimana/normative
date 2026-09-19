@@ -564,8 +564,11 @@ are on the current roadmap.
 
 ## 10. Related design documents in this project
 
+- `differentiation.md` — quantitative contribution / novelty / distance / journal-tier analysis (sibling of this file)
+- `validate_narrative.md` — the paper's story arc (Introduction + Discussion drafting scaffold)
+- `tool.md` — the tool's story arc (README + tool-paper drafting scaffold)
 - `~/Documents/Normative/RESULTS.md` — the results narrative (living)
 - `~/Documents/Normative/mu_hat.md` — methodology note on site adaptation
-- `~/Documents/Normative/tool_design/ARCHITECTURE.md` — separate per-patient tool proposal
-- `~/Documents/Normative/tool_design/email_1_cnnp_gamlss.md` — BrainMoNoCle outreach draft
-- `~/Documents/Normative/tool_design/email_2_centilebrain_mean_train.md` — CentileBrain training-means outreach draft
+- `~/Documents/Normative/tool_design/ARCHITECTURE.md` — per-patient tool design (`normreport`)
+- `~/Documents/Normative/tool_design/email_1_cnnp_gamlss.md` — BrainMoNoCle outreach draft (held in reserve)
+- `~/Documents/Normative/tool_design/email_2_centilebrain_mean_train.md` — CentileBrain training-means outreach draft (held in reserve)
