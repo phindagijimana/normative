@@ -29,9 +29,12 @@ Full tool design: see `../tool_design/ARCHITECTURE.md`.
    2024).
 2. **CentileBrain-GAMLSS** — LMS distributional modelling; same 37k
    reference.
-3. **PCN Toolkit-Bayesian** — STUB in v0.1.0. Real integration with the
-   Rutherford et al. 2022 pre-trained lifespan models is on the v1.1
-   roadmap.
+3. **PCN Toolkit-Bayesian** — hierarchical Bayesian regression against
+   the pre-trained lifespan_DK_46K_59sites model bundle (Rutherford et
+   al., *Nature Protocols* 2022; *eLife* 2022), covering the 68
+   Desikan–Killiany cortical thickness regions. Site adaptation uses
+   the PCN Toolkit's built-in mechanism with the reference cohort as
+   the adaptation set.
 
 ## Install (workstation)
 

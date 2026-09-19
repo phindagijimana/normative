@@ -7,8 +7,12 @@ Ships with the accompanying validation manuscript. Scope:
 **Backends**
 - `centilebrain_mfp` — wraps the CentileBrain MFP scoring R script
 - `centilebrain_gamlss` — wraps the CentileBrain GAMLSS scoring R script
-- `pcn_bayesian` — stub; real integration with the Rutherford et al. 2022
-  pre-trained lifespan models is a v1.1 roadmap item
+- `pcn_bayesian` — real per-subject scoring against the Rutherford et
+  al. 2022 lifespan_DK_46K_59sites hierarchical Bayesian regression
+  models (cortical thickness, 68 Desikan–Killiany regions), with the
+  PCN Toolkit's built-in site-adaptation using the reference cohort
+- `pcn_bayesian_stub` — NaN-returning stub kept for tests when the
+  pcn_models/braincharts bundle is not present locally
 
 **Features**
 - Per-patient PDF report with cross-backend consensus/disagreement flagging
@@ -22,12 +26,10 @@ Ships with the accompanying validation manuscript. Scope:
 
 **Deferred to v1.1+**
 - URMC-scanner-specific reference cohort (post-publication URMC deployment)
-- PCN Toolkit-Bayesian per-patient CLI backend (real scoring exists as
-  a cohort-level batch script at `score/score_pcn_toolkit.py` in the
-  parent repository, producing `score/ideas_zscores_pcn.csv`; wrapping
-  it behind the CLI's `NormativeBackend` interface for on-demand
-  single-patient invocation is the v0.2.0 task)
 - BrainMoNoCle-GAMLSS backend (contingent on CNNP model access)
+- PCN Toolkit backends for surface area and subcortical volume
+  (currently only cortical thickness is bundled in the distributed
+  Desikan–Killiany lifespan model set)
 - Native FreeSurfer `stats/` directory parsing (currently CSV-only)
 - Web UI / Veritas platform endpoint
 - Batch mode

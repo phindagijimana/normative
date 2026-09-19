@@ -24,7 +24,10 @@ def test_package_imports():
 def test_backend_registry():
     from normreport.backends import REGISTRY, get_backend
     assert set(REGISTRY.keys()) == {
-        "centilebrain_mfp", "centilebrain_gamlss", "pcn_bayesian",
+        "centilebrain_mfp",
+        "centilebrain_gamlss",
+        "pcn_bayesian",
+        "pcn_bayesian_stub",
     }
     for name in REGISTRY:
         b = get_backend(name)
