@@ -8,23 +8,20 @@ FreeSurfer stats + age/sex, applies three normative-modelling backends
 a per-region Z-score profile + a PDF report showing consensus and
 disagreement across backends.
 
-**Scope decision (locked with the paper scope, Option A):** the tool is
-**a first-class contribution of the accompanying manuscript** — not a
-supplementary code release. See `paper_planning/PAPER_PLAN.md` §5
-Novelty #6 and §6 Contribution #6 for the paper-side framing.
-
-The initial release ships **three backends**, mirroring the paper's
-2-platform / 3-algorithm scope:
+**Scope decision:** the initial release ships **three backends**,
+mirroring the multi-platform validation scope:
 
 1. `centilebrain_mfp` — wraps `score/score_centilebrain.R`
 2. `centilebrain_gamlss` — wraps `score/score_centilebrain_gamlss.R`
 3. `pcn_bayesian` — wraps PCN Toolkit's hierarchical Bayesian scoring
-   (integration pending)
+   (a cohort-level batch version exists at `score/score_pcn_toolkit.py`;
+   wrapping it behind the CLI backend interface for on-demand
+   single-patient invocation is a v0.2.0 task)
 
 A **BrainMoNoCle backend slot** is reserved in the design but not
 implemented — the `NormativeBackend` protocol accommodates it as a
-drop-in fourth backend if the CNNP lab later shares their fitted models
-(email draft held in reserve at `email_1_cnnp_gamlss.md`).
+drop-in fourth backend if the CNNP lab later shares their fitted
+models.
 
 ## MVP scope for paper submission
 

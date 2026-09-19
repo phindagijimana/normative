@@ -36,11 +36,11 @@ mechanism with the same controls as the adaptation set.
 |---|---|---|---|
 | `mu_hat_cross_validation.R` | Test 1: K-fold cross-validation of the adaptation procedure | Same as the scoring scripts | `mu_hat_cv_results.csv` |
 | `mu_hat_sample_size_sensitivity.R` | Test 2: `mu_hat` variance at N ∈ {10, 20, 30, 50, 75, 100} | Same | `mu_hat_sample_size_variance.csv` |
-| `MU_HAT_ROBUSTNESS.md` | Interpretation + implications for the paper and the tool | — | Read this to understand the two tests |
 
 **Key finding:** held-out control Z has median absolute mean 0.002 and
 median SD 1.02–1.13; `mu_hat` stabilises at N ≥ 30 (SD ~0.11 on the
-Z-scale) and is near-deterministic by N = 50 (SD ~0.03).
+Z-scale) and is near-deterministic by N = 50 (SD ~0.03). See
+`../mu_hat.md` for the site-adaptation methodology these tests validate.
 
 ## 4. Task-specific analyses
 
@@ -85,7 +85,6 @@ Z-scale) and is near-deterministic by N = 50 (SD ~0.03).
 | `lateralization_results.csv` | Accuracy, sensitivity per side, chi-square p, per pathology (14 rows) |
 | `ilae_outcome_prediction.py` | Ridge logistic regression: preop Z-scores → ILAE-1 seizure-freedom AUC |
 | `ilae_outcome_aucs.csv` | AUC + 95% CI + ΔAUC (Z − raw) + permutation p per algorithm |
-| `CLINICAL_EXTENSIONS.md` | Interpretation + implications for the paper and the tool |
 
 ## 5. Per-subject Z-score outputs (the paper's Contribution #5)
 

@@ -42,3 +42,13 @@ Thumbs.db
 # Upstream PCN Toolkit braincharts clone (~1.5 GB with extracted model bundles)
 # Clone separately if reproducing PCN scoring — see score/score_pcn_toolkit.py
 pcn_models/
+
+# Paper artefacts (manuscript planning, drafts, results narrative,
+# interpretive analysis notes, outreach correspondence). These live on
+# a local-only `paper` branch and are intentionally excluded from the
+# public `main` branch. Do not commit these paths on main.
+paper_planning/
+RESULTS.md
+score/MU_HAT_ROBUSTNESS.md
+score/CLINICAL_EXTENSIONS.md
+tool_design/email_*.md

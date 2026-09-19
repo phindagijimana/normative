@@ -11,34 +11,28 @@ Applies both of the pre-trained CentileBrain algorithms — **MFPR** and
 Both algorithms give consistent results across all four tasks, so the
 findings do not depend on the algorithm choice.
 
-**Paper scope (locked, Option A, aiming for NeuroImage):** 2 platforms
-+ 3 algorithm classes + 2 training cohorts + open-source tool release
-as a co-equal contribution. Scientific validation covers
-CentileBrain-MFP (37k), CentileBrain-GAMLSS (37k), and the PCN Toolkit
-Bayesian lifespan models (57k+), all on the IDEAS cohort; the tool
-contribution is `normreport` — a CLI + container wrapping all three
-backends, producing per-patient PDF reports with cross-backend
-consensus/disagreement flagging.
+**Scope.** Three normative-modelling backends are scored on IDEAS: two
+from **CentileBrain** (Ge et al. 2024, *Lancet Digital Health*) — the
+recommended multivariate fractional polynomial regression (MFP) and the
+alternative GAMLSS distributional modelling — plus one from the
+**PCN Toolkit** (Rutherford et al. 2022, *Nature Protocols*) —
+hierarchical Bayesian regression on the 46,000-subject lifespan
+reference. The tool contribution is **`normreport`**, a CLI + container
+that wraps all three backends and produces a per-patient PDF report
+with cross-backend consensus flagging.
 
-The tool ships with IDEAS-controls-2025 as the default reference
-cohort. **URMC-scanner-specific adaptation is a post-publication
-v1.1 task**, done at URMC via retrospective control harvest — required
-for local clinical deployment but explicitly not on the paper's
-critical path.
+The tool ships with **IDEAS-controls-2025** as the default reference
+cohort. Site-specific adaptation for other institutions (e.g. URMC) is
+a post-release v1.1 task; see the tool's `normreport/README.md`.
 
-See `paper_planning/PAPER_PLAN.md` for the full scope, journal-target
-analysis, and reserved-but-not-in-scope options (BrainMoNoCle as a
-third platform, CentileBrain training means as a supplementary
-comparison — both have outreach emails drafted and held in reserve at
-`tool_design/`). Tool design at `tool_design/ARCHITECTURE.md`.
+Tool design: `tool_design/ARCHITECTURE.md`. Site-adaptation
+methodology: `mu_hat.md`. Source-paper summary: `normative.md`.
 
 **Source papers:**
 
 - Ge R et al. *Normative modelling of brain morphometry across the lifespan with CentileBrain.* *Lancet Digital Health* 2024;6(3):e211–e221.
+- Rutherford S et al. *The normative modeling framework for computational psychiatry.* *Nature Protocols* 2022;17:1711–1734.
 - Taylor P et al. *IDEAS — Imaging Database for Epilepsy and Surgery.* *Epilepsia* 2025;66(2):471–481.
-
-**All four tasks complete for both algorithms.** See `RESULTS.md` for
-headline numbers and interpretation.
 
 ## Repository layout
 
@@ -46,8 +40,7 @@ headline numbers and interpretation.
 Normative/
 ├── README.md                    # this file — start here
 ├── SETUP.md                     # external dependencies
-├── RESULTS.md                   # findings summary (living document)
-├── mu_hat.md                    # site-adaptation methodology note
+├── mu_hat.md                    # site-adaptation methodology note (cited from code)
 ├── normative.md                 # summary of Ge et al. 2024 (source paper)
 │
 ├── ideas_data/                  # IDEAS Figshare downloads + unified loader
@@ -69,8 +62,6 @@ Normative/
 │   ├── mu_hat_sample_size_sensitivity.R   # Test 2 of mu_hat.md
 │   ├── hemispheric_lateralization.py      # clinical extension
 │   ├── ilae_outcome_prediction.py         # clinical extension
-│   ├── MU_HAT_ROBUSTNESS.md     # Tests 1+2 interpretation
-│   ├── CLINICAL_EXTENSIONS.md   # lateralization + ILAE interpretation
 │   └── [~20 result CSVs indexed in score/README.md]
 │
 ├── normreport/                  # the tool (Contribution #6)
@@ -82,20 +73,8 @@ Normative/
 │   ├── LICENSE / CITATION.cff / CHANGELOG.md
 │   └── pyproject.toml
 │
-├── paper_planning/              # manuscript scaffolding
-│   ├── README.md                # index of all 8 planning docs (essential)
-│   ├── PAPER_PLAN.md            # locked scope, execution, risks, journal tier
-│   ├── validate_manuscript.md   # first-pass manuscript draft
-│   ├── validate_narrative.md    # story arc for the science
-│   ├── validate_abstract.md/.docx  # PI-shareable abstract
-│   ├── tool.md                  # story arc for the tool
-│   ├── differentiation.md       # novelty rubric + journal tier
-│   └── _build_abstract_docx.py  # utility
-│
-├── tool_design/                 # design docs + reserved outreach emails
-│   ├── ARCHITECTURE.md          # tool design (blueprint for normreport/)
-│   ├── email_1_cnnp_gamlss.md   # held in reserve
-│   └── email_2_centilebrain_mean_train.md  # held in reserve
+├── tool_design/                 # tool design documentation
+│   └── ARCHITECTURE.md          # blueprint that normreport/ implements
 │
 ├── centilebrain/                # upstream CentileBrain repo (gitignored, ~960 MB)
 │   └── ...                      # clone per SETUP.md
@@ -104,8 +83,9 @@ Normative/
     └── ...                      # clone per SETUP.md
 ```
 
-**Every subdirectory has its own `README.md`** — start with `score/README.md`
-and `paper_planning/README.md` for the two densest folders.
+The two densest folders (`score/` and `normreport/`) each have their
+own `README.md` — start there for details on scripts, outputs, and
+tool usage.
 
 ## Reproduction
 
@@ -150,15 +130,21 @@ Bayesian scoring.
 Total runtime end-to-end: ~20 min on a workstation (dominated by the
 SVC 100×5-fold CV runs — two of them now, one per algorithm).
 
-## Headline results (see `RESULTS.md` for detail)
+## Headline validation results
 
-| Task | Metric | MFP | GAMLSS | Read |
-|---|---|---|---|---|
-| 5 — calibration | Controls Z SD (median) | 1.02 / 1.09 / 1.02 | 1.00 / 1.06 / 1.04 | thickness / subcort / area — both algorithms transfer well |
-| 6 — convergence | vs IDEAS-internal Z (median r) | 0.83 / 0.85 / 0.81 | **0.96 / 0.81 / 0.97** | GAMLSS matches IDEAS internals almost perfectly on cortical measures |
-| 7 — classification | Epilepsy-vs-control AUC | **0.797** | **0.796** | Z-scores (either algorithm) give no advantage over raw morphometry (AUC 0.794) |
-| 8 — resection | Preop \|Z\| vs resected fraction ρ | 0.079 | 0.074 | weak but real localisation, algorithm-independent, null baseline 0.006 |
-| Head-to-head | MFP vs GAMLSS Z per region | median r 0.81–0.89 | — | strong agreement across algorithms |
+Cortical thickness (the common intersection of all three backends):
+
+| Metric | MFP | GAMLSS | PCN Toolkit |
+|---|---:|---:|---:|
+| Control Z SD (median) | 1.02 | 1.00 | 0.88 |
+| Convergence r vs IDEAS-internal | 0.83 | 0.96 | 0.94 |
+| Epilepsy-vs-control AUC (Z vs raw 0.794) | 0.797 | 0.796 | ~0.80 |
+| Preop \|Z\| vs resected fraction ρ | 0.079 | 0.074 | 0.045 |
+
+Per-region tables, per-cohort breakdowns, and full clinical extension
+analyses (hemispheric lateralisation ~67 %, ILAE-1 outcome prediction
+at chance) are documented in `score/README.md` and the analysis output
+CSVs it indexes.
 
 ## Non-obvious caveats (must appear in any writeup)
 

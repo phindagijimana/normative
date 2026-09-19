@@ -49,8 +49,8 @@ on healthy controls (in our first attempt: mean ≈ −17, SD ≈ 7.8).
 
 Two paths were available to close this gap:
 
-1. **Contact the CentileBrain authors** and request `mean_train`
-   directly. Draft email at `tool_design/email_2_centilebrain_mean_train.md`.
+1. **Contact the CentileBrain authors** (`ruiyang.ge@ubc.ca`,
+   `sophia.frangou@gmail.com`) and request `mean_train` directly.
 2. **Estimate the per-region offset empirically** from a reference
    sample of healthy controls scanned at the target site — the standard
    PCN Toolkit / normative-modeling site-adaptation procedure. This is
@@ -328,8 +328,7 @@ Sample paragraph, ready to adapt for a methods section:
 
 ## 10. Open questions
 
-* Whether the CentileBrain authors will release `mean_train` on request
-  (email drafted at `tool_design/email_2_centilebrain_mean_train.md`).
+* Whether the CentileBrain authors will release `mean_train` on request.
   If yes, we can compare the empirical `mu_hat` against the true
   training means directly.
 * Whether the 100 IDEAS controls (single site, mostly adult, UK) are a

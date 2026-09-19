@@ -20,7 +20,7 @@ For a clinical-research pipeline that must run offline, produce
 audited reports, and provide a robustness check by comparing multiple
 normative-modelling approaches, this tool fills the gap.
 
-Full narrative: see `../paper_planning/tool.md` in the parent repository.
+Full tool design: see `../tool_design/ARCHITECTURE.md`.
 
 ## Backends shipped
 
