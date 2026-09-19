@@ -70,11 +70,17 @@ reference generalises. Mean is ≈ 0 by construction of the PCN Toolkit
 site-adaptation procedure (Rutherford 2022; see `mu_hat.md`), so SD is
 the informative metric.
 
-| Measure | MFP median SD | GAMLSS median SD |
-|---|---:|---:|
-| Cortical **thickness** | 1.02 | **1.00** |
-| Cortical **surface area** | 1.02 | 1.04 |
-| **Subcortical volume** | 1.09 | **1.06** |
+| Measure | MFP median SD | GAMLSS median SD | PCN Toolkit median SD |
+|---|---:|---:|---:|
+| Cortical **thickness** | 1.02 | **1.00** | 0.88 |
+| Cortical **surface area** | 1.02 | 1.04 | — (not in DK model bundle) |
+| **Subcortical volume** | 1.09 | **1.06** | — (not in DK model bundle) |
+
+**Cross-validation of the site-adaptation procedure** (Test 1 in
+`mu_hat.md`): held-out control Z has median absolute mean 0.002 and
+median SD 1.02–1.13 across 150 regions and both CentileBrain
+algorithms. Calibration on IDEAS controls is not an artefact of the
+adaptation step. Full analysis at `score/MU_HAT_ROBUSTNESS.md`.
 
 *(Cross-cohort SDs, computed on 100 controls per algorithm; the earlier
 `1.25` for surface area reported in the single-MFP writeup was the
@@ -110,21 +116,22 @@ Region-wise Pearson r between our CentileBrain-derived Z-scores and the
 Z-scores IDEAS publishes (patients scored against their 100 controls using
 ComBat harmonisation).
 
-| Measure | MFP median r | MFP r > 0.7 | GAMLSS median r | GAMLSS r > 0.7 |
-|---|---:|---:|---:|---:|
-| Cortical thickness | 0.83 | 82% | **0.955** | **100%** |
-| Cortical surface area | 0.81 | 90% | **0.969** | **100%** |
-| Subcortical volume | **0.85** | 100% | 0.81 | 93% |
+| Measure | MFP median r | MFP r > 0.7 | GAMLSS median r | GAMLSS r > 0.7 | PCN Toolkit median r | PCN r > 0.9 |
+|---|---:|---:|---:|---:|---:|---:|
+| Cortical thickness | 0.83 | 82% | **0.955** | **100%** | **0.943** | **85%** |
+| Cortical surface area | 0.81 | 90% | **0.969** | **100%** | — | — |
+| Subcortical volume | **0.85** | 100% | 0.81 | 93% | — | — |
 
-**GAMLSS matches IDEAS-internal Z-scores much more closely on cortical
-measures** — median r ≈ 0.96, essentially perfect agreement across every
-region. This is a striking finding: two independently-implemented
-approaches (CentileBrain-GAMLSS on 37k subjects; IDEAS-internal ComBat
-on 100 controls) converge almost exactly. The most plausible mechanistic
-explanation is that both directly model regional distributions rather
-than covariate-adjusted residuals, whereas MFP explicitly conditions on
-ICV / mean thickness / mean surface area as a global covariate. MFP still
-achieves r ≈ 0.83, which is strong agreement — but not as tight as GAMLSS.
+**Both distributional-model backends (GAMLSS and PCN Toolkit) match
+IDEAS-internal Z-scores at r ≈ 0.94–0.96.** This is a striking finding:
+three independently-implemented approaches — CentileBrain-GAMLSS on 37k
+subjects, PCN Toolkit-Bayesian on 46k, and IDEAS-internal ComBat on 100
+controls — converge almost exactly on cortical thickness. The most
+plausible mechanistic explanation is that all three model regional
+distributions directly, whereas MFP conditions on a global covariate
+(ICV / mean thickness / mean surface area). MFP still achieves r ≈ 0.83,
+which is strong agreement — but not as tight as the distributional
+backends.
 
 **Head-to-head — do MFP and GAMLSS agree on which subjects are abnormal
 per region?** (Pearson r across 442 patients per region.)
@@ -211,6 +218,7 @@ preop `|Z|` and by resected fraction, and compare.
 | MFP — ILAE-1 = 1 (seizure-free) | 238 | 0.087 | — | 76% | 36% |
 | MFP — ILAE-1 ≥ 2 (not seizure-free) | 178 | 0.071 | — | 72% | 31% |
 | **GAMLSS** — all surgical | 430 | 0.074 | 0.072 | 72% | — |
+| **PCN Toolkit** — all surgical (cortical thickness only) | 430 | 0.045 | 0.054 | 64% | — |
 | **Null (shuffled resections)** | 430 | +0.006 | ~0 | ~50% | ~7% (chance) |
 
 **Reads:**
@@ -225,11 +233,67 @@ preop `|Z|` and by resected fraction, and compare.
   0.071) — consistent with the hypothesis that Z-scores mark the
   epileptogenic zone whose removal yields cure, but the effect size is
   small.
-- **Algorithm-independent**: MFP and GAMLSS give essentially the same
-  ρ ≈ 0.07–0.08 and ~72–74 % positive fraction. The weak localisation
-  signal is real regardless of which CentileBrain algorithm is used.
+- **Platform-independent**: MFP, GAMLSS, and PCN Toolkit (cortical
+  thickness only) all give positive ρ well above the null (0.045–0.079,
+  vs baseline 0.006). The weak localisation signal is real regardless
+  of which normative-modelling platform is used.
 
-Per-subject tables: `score/resection_concordance.csv` (MFP),
+Per-subject tables: `score/resection_concordance.csv` (MFP), and
+`score/task8_three_backend_resection.csv` (all three platforms).
+
+---
+
+## Clinical extensions — hemispheric lateralisation and outcome prediction
+
+Two additional analyses on the surgical subset, added after the four
+core tasks. Full detail at `score/CLINICAL_EXTENSIONS.md`.
+
+### Hemispheric lateralisation
+
+For each surgical patient, is the more-deviant hemisphere (higher mean
+|Z| across left- vs right-hemisphere regions) the actual side of
+resection?
+
+| Algorithm | N | Accuracy | Sens L | Sens R | χ² p |
+|---|---:|---:|---:|---:|---:|
+| MFP | 442 | **67.0%** | 69.2% | 64.4% | < 0.001 |
+| GAMLSS | 442 | **64.7%** | 65.8% | 63.5% | < 0.001 |
+
+Per-pathology accuracy (MFP): DUAL 85.7 % · CAV 69.7 % · HS 67.0 % ·
+OTHER 66.2 % · DNT 65.4 % · FCD 56.4 % (at chance). Effect strongest
+in macroscopic focal lesions (DUAL, CAV, HS) and weakest in FCD, which
+matches the well-known imaging subtlety of dysplasia.
+
+### ILAE-1 seizure-freedom prediction
+
+Ridge logistic regression, 100 × 5-fold CV on 150 Z-score features vs
+150 raw features. Target: `ILAE_Year1 == 1` (seizure-free at year 1).
+N = 427 patients with outcome data.
+
+| Feature set | AUC (mean) | 95% CI | ΔAUC (Z − raw) | p |
+|---|---:|:---:|---:|---:|
+| MFP Z-scores | 0.525 | [0.495, 0.555] | +0.008 | 0.009 |
+| MFP raw morphometry | 0.517 | [0.476, 0.552] | — | — |
+| GAMLSS Z-scores | 0.524 | [0.484, 0.564] | +0.007 | 0.008 |
+| GAMLSS raw morphometry | 0.517 | [0.479, 0.555] | — | — |
+
+Within the hippocampal-sclerosis stratum (N = 211): MFP Z AUC 0.491
+(chance).
+
+**Read:** preoperative normative Z-scores contain almost no information
+about post-operative seizure freedom. The ΔAUC (Z − raw) is
+statistically detectable at p = 0.009 but clinically negligible (+0.008
+AUC). Post-operative outcomes are driven by variables that structural
+morphometry — normalised or raw — does not capture: completeness of
+resection, network-level properties, medication adherence, and
+pathology-specific pathophysiology.
+
+**Combined clinical interpretation:** normative deviation scores are a
+valid **lateralisation input** (67 % above chance, algorithm-
+independent, effect strongest for macroscopic lesions) but not an
+**outcome predictor** (chance-level AUC in whole cohort and within HS).
+They belong in the presurgical workup alongside EEG, MEG, PET, and
+radiological review — not as an outcome-prognosis tool.
 `score/task8_resection_rho_mfp_vs_gamlss.csv` (both algorithms).
 
 ---

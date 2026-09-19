@@ -23,82 +23,77 @@ neuroimaging tools
 
 ## Abstract
 
-**Background.** Normative modelling turns population-scale healthy
-reference distributions into per-subject brain deviation scores. Three
-research groups now distribute pre-trained normative models, but no
-published work has applied more than one platform to a common clinical
-cohort, tested whether findings replicate across algorithm-class
-choices within a platform, or tested whether the platforms' clinical-
-utility claims generalise beyond the diseases the original papers
-demonstrated.
+**Background.** Normative brain-morphometry models convert
+population-scale healthy references into per-subject deviation
+scores. Three groups now distribute pre-trained models, yet no
+published work applies more than one platform to a common clinical
+cohort, tests whether findings replicate across algorithm choices, or
+asks whether the platforms' clinical claims extend beyond the
+diseases they originally demonstrated.
 
-**Methods.** We validated two pre-trained normative-modelling platforms
-— CentileBrain (Ge *et al.*, *Lancet Digital Health* 2024; 37,407-
-subject training reference) using both distributed algorithms
-(multivariate fractional polynomial regression, MFP; and generalised
-additive models for location, scale and shape, GAMLSS), and the PCN
-Toolkit lifespan models (Rutherford *et al.*, *Nature Protocols* 2022;
-46,000-subject training reference, hierarchical Bayesian regression)
-— on 442 focal-epilepsy patients and 100 healthy controls from the
-IDEAS UK cohort (Taylor *et al.*, *Epilepsia* 2025). We applied the
-site-adaptation procedure recommended by the PCN Toolkit protocol
-across all three backends, and tested calibration, convergence with
-IDEAS-internal Z-scores, classification of patients versus controls
-(comparing normative Z-scores to raw morphometry), preoperative
-resection concordance, hemispheric lateralisation of the epileptogenic
-zone, and prediction of one-year seizure freedom.
+**Methods.** We validate two published platforms — CentileBrain (Ge
+*et al.*, *Lancet Digital Health* 2024; 37,407-subject reference)
+using both distributed algorithm classes (multivariate fractional
+polynomial regression, MFP; and generalised additive models for
+location, scale and shape, GAMLSS), and the PCN Toolkit lifespan
+models (Rutherford *et al.*, *Nature Protocols* 2022; 46,000-subject
+reference, hierarchical Bayesian regression) — on 442 focal-epilepsy
+patients and 100 healthy controls from the IDEAS UK cohort (Taylor
+*et al.*, *Epilepsia* 2025). We apply the standard PCN Toolkit
+site-adaptation procedure across all three backends and test six
+questions: calibration, convergence with IDEAS-internal Z-scores,
+patient-vs-control classification (Z-scores versus raw morphometry),
+preoperative resection concordance, hemispheric lateralisation, and
+one-year seizure-freedom prediction.
 
-**Results.** All three backends produced well-calibrated Z-scores on
-IDEAS controls (per-region standard deviation across 150 Desikan–
-Killiany + Aseg regions: 0.88–1.13). Cross-validation of the site-
-adaptation procedure confirmed held-out control Z-scores were unbiased
-(median absolute mean 0.002) with standard deviation 1.02–1.13.
-Platform-derived Z-scores agreed with IDEAS's independent
-ComBat-harmonised Z-scores at Pearson *r* = 0.83 (MFP), 0.94 (PCN), and
-0.96 (GAMLSS) across cortical regions. Contrary to the CentileBrain
-team's HCP-EP psychosis finding (Z-scores AUC 0.63 vs raw 0.49),
-Z-scores gave no advantage over raw morphometry for classifying
+**Results.** All three backends produce well-calibrated Z-scores on
+IDEAS controls (per-region standard deviation 0.88 – 1.13 across 150
+Desikan–Killiany and Aseg regions). Cross-validation of the site
+adaptation confirms unbiased held-out controls (median absolute mean
+0.002; standard deviation 1.02 – 1.13). Platform Z-scores agree with
+IDEAS's independent ComBat Z-scores at Pearson *r* = 0.83 (MFP), 0.94
+(PCN), and 0.96 (GAMLSS) across cortical regions. Contrary to the
+CentileBrain team's HCP-EP psychosis finding (AUC 0.63 vs raw 0.49),
+Z-scores give no advantage over raw morphometry for classifying
 epilepsy patients versus controls under any algorithm (AUC ≈ 0.80).
-Preoperative Z-scores showed weak but statistically-significant
-concordance with the surgically-resected region (Spearman ρ ≈ 0.03–0.08,
-13× the permutation null baseline). Preoperative hemispheric
-lateralisation from Z-scores correctly identified the resected
-hemisphere at 65–67 % accuracy (chi-square *p* < 0.001), with the
-strongest effect in cavernoma and dual pathology and lowest in focal
-cortical dysplasia. One-year seizure-freedom prediction from Z-scores
-achieved AUC ≈ 0.52 — essentially at chance. We release *normreport*,
-an open-source containerised command-line tool that wraps the three
-tested backends with cross-backend consensus flagging.
+Preoperative Z-scores show weak but statistically-significant
+concordance with the resected region (Spearman ρ = 0.03 – 0.08, 13×
+the permutation null). Preoperative Z-scores correctly identify the
+resected hemisphere in 65 – 67 % of patients (χ² *p* < 0.001), with the
+strongest effect in cavernoma and dual pathology and the weakest in
+focal cortical dysplasia. Z-scores do not predict one-year seizure
+freedom (AUC ≈ 0.52, chance-level). We release *normreport*, an
+open-source containerised command-line tool that runs the three
+backends together with cross-backend consensus flagging.
 
-**Conclusion.** Pre-trained normative brain-morphometry models generalise
-to a UK single-site focal-epilepsy cohort under two platforms and three
-algorithm classes. The CentileBrain team's specific clinical-utility
-claim does not extend to focal epilepsy: normative Z-scores do not
-outperform raw morphometry for disease classification, and they do not
-predict post-operative seizure freedom. They do lateralise the
-epileptogenic hemisphere above chance and weakly localise the
-epileptogenic zone. Multi-platform triangulation rules out
-platform-specific artefacts. The findings support normative modelling
-as a methodologically robust framework whose clinical value is disease-
-and question-specific rather than universal.
+**Conclusion.** Pre-trained normative brain-morphometry models
+generalise to a UK single-site focal-epilepsy cohort across two
+platforms and three algorithm classes. The CentileBrain
+clinical-utility claim does not extend to focal epilepsy: Z-scores do
+not outperform raw morphometry for classification, and they do not
+predict seizure freedom. They do lateralise the epileptogenic
+hemisphere above chance and weakly localise the resection zone.
+Multi-platform triangulation rules out platform-specific artefacts.
+Normative modelling is a methodologically robust framework whose
+clinical value depends on the disease and the question — not a
+universal biomarker.
 
 ---
 
 ## Introduction
 
-Structural magnetic resonance imaging (MRI) of the brain has, over the
-past two decades, generated healthy reference cohorts of a scale that
-was previously the domain of paediatric growth charts. Normative
-modelling is the class of statistical methods that converts these
-reference distributions into per-subject deviation scores — Z-scores or
-centiles that quantify how far an individual's brain morphometry falls
-from what age- and sex-matched healthy peers exhibit. Where traditional
-case–control neuroimaging asks whether groups differ on average, the
-normative approach asks how unusual an individual brain is. That
-reframing has made normative deviations attractive as candidate
-biomarkers, screening tools, and inputs to clinical decision support
-in psychiatry and neurology (Marquand *et al.*, 2016; Rutherford *et
-al.*, 2022; Ge *et al.*, 2024).
+Structural magnetic resonance imaging (MRI) has produced healthy
+reference cohorts on the scale that paediatric growth charts once
+occupied. Normative modelling — the class of statistical methods that
+converts these references into per-subject deviation scores — quantifies
+how far an individual brain measure sits from what age- and
+sex-matched healthy peers exhibit. Traditional case-control
+neuroimaging asks whether groups differ on average; the normative
+approach asks how unusual an individual is. That reframing has made
+normative deviations attractive as candidate biomarkers, screening
+signals, and inputs to clinical decision support in psychiatry and
+neurology (Marquand *et al.*, 2016; Rutherford *et al.*, 2022; Ge *et
+al.*, 2024).
 
 Three research groups now distribute pre-trained normative brain-
 morphometry models covering the Desikan–Killiany cortical atlas and the
@@ -507,16 +502,15 @@ reference. This is a defensible negative finding that further scopes
 the tool's clinical claim: normative Z-scores are lateralisation
 inputs, not outcome predictors.
 
-Together, these six findings position normative brain-morphometry
-modelling as a **methodologically robust framework whose clinical
-value is disease- and question-specific rather than universal**. The
+These six findings position normative brain-morphometry modelling as
+**methodologically robust but clinically question-specific**. The
 paradigm generalises across platforms and algorithms; the specific
-clinical outputs that make it valuable depend on what question is
-asked, what disease is present, and what sample size is available.
-This positioning is more mature than either the enthusiastic framing
-("normative Z-scores are a universal biomarker") or the dismissive
-framing ("normative modelling is just centre and scale") that appear
-in adjacent literature.
+clinical outputs that make it valuable depend on the disease, the
+question, and the sample size. This positioning is more mature than
+either extreme in the adjacent literature — the enthusiastic framing
+that treats normative Z-scores as a universal biomarker, or the
+dismissive framing that treats normative modelling as merely
+centre-and-scale re-labelling.
 
 ### The tool contribution
 
@@ -625,20 +619,19 @@ pipeline.
 ### Conclusion
 
 Pre-trained normative brain-morphometry models generalise to a UK
-single-site focal-epilepsy cohort under two published platforms and
-three algorithm classes. The CentileBrain team's specific claim that
-normative Z-scores outperform raw morphometry for clinical
-classification does not extend from psychosis to focal epilepsy.
-Preoperative normative Z-scores contain real but weak information
-about the epileptogenic zone: they lateralise the resection
-hemisphere at 65–67 % accuracy above chance, and their most-deviant
-region matches the actual resected region in ~35 % of patients.
-They do not predict post-operative seizure freedom. Multi-platform
-triangulation rules out platform-specific artefacts as an explanation
-for the negative clinical-utility finding. We release *normreport*, an
+single-site focal-epilepsy cohort across two published platforms and
+three algorithm classes. The CentileBrain claim that Z-scores
+outperform raw morphometry for clinical classification does not
+extend from psychosis to focal epilepsy. Preoperative Z-scores carry
+real but weak spatial information about the epileptogenic zone:
+they lateralise the resection hemisphere at 65 – 67 % accuracy above
+chance, and their most-deviant region matches the actual resected
+region in about a third of patients. They do not predict
+post-operative seizure freedom. Multi-platform triangulation
+eliminates platform-specific artefacts as an explanation for the
+negative clinical-utility finding. We release *normreport*, an
 open-source multi-backend tool that operationalises the validated
-pipeline for use by other groups in credentialed clinical-research
-settings.
+pipeline for credentialed clinical-research deployment.
 
 ## Data availability
 
@@ -739,6 +732,42 @@ Ndagijimana P, *et al*. [Author's prior paper — cite exact title and
 volume from lab records]. *Brain Commun*. 2026. doi:*[to be added]*
 
 ---
+
+## Writing-style guardrails for future revisions
+
+Every revision pass should preserve the following (drawn from
+Hamilton's *Seven Rules of Writing* and Northwestern CLIMB's *Principles
+for Writing Readable Sentences*, plus the author's prior work in
+*Brain Communications* 2026):
+
+- **Active voice by default.** "The classifier separated patients from
+  controls at AUC 0.80," not "AUC 0.80 was achieved for separating
+  patients from controls by the classifier."
+- **Concise phrasing.** Cut *the fact that*, *due to the fact that*,
+  *in order to*, *it should be noted that*, *it is worth mentioning
+  that*. If a sentence loses no meaning when the phrase is removed,
+  remove it.
+- **Topic sentence first.** Every paragraph opens with a sentence
+  that states what the paragraph is about. Supporting sentences follow.
+- **One idea per sentence.** Split long sentences whose reader would
+  need to re-read them to follow the argument.
+- **Transitions between paragraphs.** Use *echo words* (repeating a
+  key noun from the previous paragraph) or a short connective phrase to
+  guide the reader from one section to the next.
+- **Precise pronouns.** Every "this," "that," "it," and "they" must have
+  a single unambiguous antecedent in the preceding sentence.
+- **Numbers before adjectives.** "AUC 0.80" beats "an area under the
+  curve of approximately zero-point-eight."
+- **Confident negative framings.** A negative finding is not a hedged
+  positive one. "Z-scores do not predict seizure freedom" is stronger
+  and more honest than "Z-scores did not appear to significantly
+  predict seizure freedom to a meaningful degree."
+- **Simple, precise language.** Prefer *use* over *utilise*, *test*
+  over *evaluate*, *show* over *demonstrate*, *find* over *observe*.
+  Reserve the Latinate verb only when the simpler word is genuinely
+  imprecise.
+- **Read the abstract aloud before submitting.** If a sentence trips
+  the reader's tongue, it will trip the reviewer's eye.
 
 ## Notes for internal review
 
