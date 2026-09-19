@@ -43,12 +43,18 @@ Thumbs.db
 # Clone separately if reproducing PCN scoring — see score/score_pcn_toolkit.py
 pcn_models/
 
-# Paper artefacts (manuscript planning, drafts, results narrative,
+# Paper artefacts (manuscript, planning docs, results narrative,
 # interpretive analysis notes, outreach correspondence). These live on
 # a local-only `paper` branch and are intentionally excluded from the
 # public `main` branch. Do not commit these paths on main.
+manuscript/
 paper_planning/
 RESULTS.md
 score/MU_HAT_ROBUSTNESS.md
 score/CLINICAL_EXTENSIONS.md
+score/supp_table_s3_age_bin_sensitivity.csv
 tool_design/email_*.md
+
+# Voice-reference PDFs used during manuscript authoring (author's prior
+# published paper). Kept locally, not distributed.
+papers/
