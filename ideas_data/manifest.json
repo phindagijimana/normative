@@ -1,0 +1,102 @@
+{
+  "freesurfer_stats": {
+    "title": "Item - tables_stats_freesurfer - figshare - Figshare",
+    "files": [
+      {
+        "id": 48486661,
+        "name": "controls_aseg_vol.txt",
+        "size": 41342
+      },
+      {
+        "id": 48486658,
+        "name": "controls_aparc_vol.txt",
+        "size": 42281
+      },
+      {
+        "id": 48486655,
+        "name": "controls_aparc_thick.txt",
+        "size": 48316
+      },
+      {
+        "id": 48486652,
+        "name": "controls_aparc_area.txt",
+        "size": 39954
+      },
+      {
+        "id": 46131003,
+        "name": "aparc_area.txt",
+        "size": 169050
+      },
+      {
+        "id": 46131000,
+        "name": "aparc_thick.txt",
+        "size": 204862
+      },
+      {
+        "id": 46130997,
+        "name": "aparc_vol.txt",
+        "size": 178369
+      },
+      {
+        "id": 46130994,
+        "name": "aseg_vol.txt",
+        "size": 177720
+      }
+    ]
+  },
+  "clinical_metadata": {
+    "title": "Item - tables_metadata - figshare - Figshare",
+    "files": [
+      {
+        "id": 48408532,
+        "name": "readme_metadata.pdf",
+        "size": 28564
+      },
+      {
+        "id": 48408520,
+        "name": "Metadata_Controls_Release.csv",
+        "size": 1724
+      },
+      {
+        "id": 46131036,
+        "name": "Metadata_Release_Anon.csv",
+        "size": 40255
+      }
+    ]
+  },
+  "ideas_z_scores": {
+    "title": "Item - tables_zscores - figshare - Figshare",
+    "files": [
+      {
+        "id": 48408322,
+        "name": "vol_zscores_controls.csv",
+        "size": 133150
+      },
+      {
+        "id": 48408319,
+        "name": "thick_zscores_controls.csv",
+        "size": 108715
+      },
+      {
+        "id": 48408316,
+        "name": "area_zscores_controls.csv",
+        "size": 107146
+      },
+      {
+        "id": 46131060,
+        "name": "vol_zscores_patients.csv",
+        "size": 707837
+      },
+      {
+        "id": 46131054,
+        "name": "thick_zscores_patients.csv",
+        "size": 575883
+      },
+      {
+        "id": 46131048,
+        "name": "area_zscores_patients.csv",
+        "size": 575647
+      }
+    ]
+  }
+}

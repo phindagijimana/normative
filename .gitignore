@@ -1,0 +1,41 @@
+# Claude Code agent state
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Upstream CentileBrain repo (~960 MB) — not redistributed here.
+# Clone separately per SETUP.md
+centilebrain/
+
+# Source paper PDF (Lancet paywall) — not redistributed
+Normative modeling.pdf
+
+# IDEAS Figshare-downloaded raw data + derived merged table.
+# Reproduce with:
+#   python3 ideas_data/fetch_figshare.py
+#   python3 ideas_data/fetch_resection.py
+#   python3 ideas_data/load_ideas.py
+ideas_data/*.txt
+ideas_data/*.csv
+ideas_data/*.pdf
+
+# Investigation / scratch artifacts kept for reference but not required
+ideas_data/_scratch/
+
+# Playwright / probe outputs
+ideas_data/centilebrain_probe/
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
