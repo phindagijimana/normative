@@ -175,8 +175,18 @@ class CentileBrainGAMLSS(NormativeBackend):
 # --------------------------------------------------------------------------
 
 class PCNBayesianStub(NormativeBackend):
-    """Placeholder. Full integration with the Rutherford et al. 2022
-    pre-trained lifespan models is deferred (paper's Path 2A execution)."""
+    """v0.1.x stub retained for testing.
+
+    Real PCN-Bayesian scoring is now implemented in the accompanying
+    ``score/score_pcn_toolkit.py`` script and produces the file
+    ``score/ideas_zscores_pcn.csv`` (cortical thickness, 68 regions,
+    Rutherford et al. 2022 lifespan_DK_46K_59sites model with the
+    PCN Toolkit's built-in site-adaptation using IDEAS controls). See
+    the manuscript §Methods for details. Wrapping the real scoring
+    behind the ``NormativeBackend`` interface for on-demand per-patient
+    invocation from the CLI is a v0.2.0 task; the current release ships
+    this stub so that ``--backend all`` runs without errors and clearly
+    reports PCN's status."""
 
     name = "pcn-bayesian-stub-v0.1"
     reference_cohort_id = "ideas-controls-2025"

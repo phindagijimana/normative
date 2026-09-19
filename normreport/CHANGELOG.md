@@ -22,7 +22,11 @@ Ships with the accompanying validation manuscript. Scope:
 
 **Deferred to v1.1+**
 - URMC-scanner-specific reference cohort (post-publication URMC deployment)
-- Real PCN Toolkit-Bayesian backend
+- PCN Toolkit-Bayesian per-patient CLI backend (real scoring exists as
+  a cohort-level batch script at `score/score_pcn_toolkit.py` in the
+  parent repository, producing `score/ideas_zscores_pcn.csv`; wrapping
+  it behind the CLI's `NormativeBackend` interface for on-demand
+  single-patient invocation is the v0.2.0 task)
 - BrainMoNoCle-GAMLSS backend (contingent on CNNP model access)
 - Native FreeSurfer `stats/` directory parsing (currently CSV-only)
 - Web UI / Veritas platform endpoint

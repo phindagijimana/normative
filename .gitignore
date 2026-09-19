@@ -39,3 +39,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+# Upstream PCN Toolkit braincharts clone (~1.5 GB with extracted model bundles)
+# Clone separately if reproducing PCN scoring — see score/score_pcn_toolkit.py
+pcn_models/
