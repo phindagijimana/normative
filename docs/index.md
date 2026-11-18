@@ -1,42 +1,46 @@
 # Normative modelling toolkit
 
-Morphometry Z-scores (CentileBrain / PCN), single-subject PDFs (`normreport`),
-and connectome normative contrasts. IDEAS is the worked example; same tools
-reuse on your data.
+Software for applying published **brain-morphometry** normative models
+(CentileBrain / PCN) and optional **connectome** normative analyses, with
+IDEAS as a worked example.
 
-**Source code:** <https://github.com/phindagijimana/normative>  
-**This documentation:** <https://normative.readthedocs.io/>
+**Source:** <https://github.com/phindagijimana/normative>  
+**Docs:** <https://normative.readthedocs.io/>
 
-## Paths
+## Two separate tracks
 
-| If you want to… | Go to |
+| Track | Purpose |
 |---|---|
-| Install tools | {doc}`installation` |
-| Learn the science (beginner → advanced) | {doc}`methods/index` |
-| Run the software | {doc}`tutorials/index` |
-| Look up flags / schemas | Reference section below |
+| **Theory & science** | Learn normative modelling from the literature (beginner → advanced) |
+| **This toolkit** | Install, tutorials, and CLI for *this* repository only |
 
 ```{toctree}
 :maxdepth: 2
-:caption: Start
+:caption: Theory & science (field)
+
+science/index
+references
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: This toolkit (software)
 
 installation
-methods/index
+toolkit/index
 tutorials/index
 ```
 
 ```{toctree}
 :maxdepth: 1
-:caption: Reference
+:caption: Toolkit reference (CLI & schemas)
 
 usage/morphometry
 usage/normreport
 usage/connectome
 inputs
-references
 building
 ```
 
-Wraps published morphometry models (does not retrain them).
-MIT license, research use only — see repository
+MIT license, research use only —
 [LICENSE](https://github.com/phindagijimana/normative/blob/main/LICENSE).

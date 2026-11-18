@@ -1,7 +1,10 @@
-# Tutorials
+# Tutorials (this toolkit)
 
-Install once ({doc}`../installation`). New to the science? Read
-{doc}`../methods/index` first (beginner → advanced).
+Hands-on guides for **this repository**. For field theory and literature,
+use {doc}`../science/index` first. For what the project contains, see
+{doc}`../toolkit/index`.
+
+Install once: {doc}`../installation`.
 
 ```{toctree}
 :maxdepth: 1
@@ -20,4 +23,4 @@ Install once ({doc}`../installation`). New to the science? Read
 | 4 | Connectome demo → your matrices |
 
 Order: **1 → 2** for cohorts; **3** for single-subject; **4** independent.
-Flags/schemas: reference pages + {doc}`../inputs`.
+CLI details: Reference section · schemas: {doc}`../inputs`.
