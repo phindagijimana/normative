@@ -34,4 +34,5 @@ references
 building
 ```
 
-Wraps published morphometry models (does not retrain them). Research use only.
+Wraps published morphometry models (does not retrain them).
+MIT license, research use only — see repository `LICENSE`.

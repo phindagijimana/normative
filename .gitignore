@@ -1,6 +1,12 @@
 # Sphinx / Read the Docs build output
 docs/_build/
 
+# Regenerable score outputs (Z-scores, summary tables). Re-run scorers /
+# analysis scripts — see docs/tutorials/.
+score/*.csv
+score/*.txt
+score/figures/
+
 # Claude Code agent state
 .claude/
 

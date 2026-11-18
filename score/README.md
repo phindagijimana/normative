@@ -9,5 +9,5 @@ Rscript score/score_centilebrain.R --help
 python3 score/score_pcn_toolkit.py --help
 ```
 
-Optional IDEAS utilities (`compare_*.py`, `classify_*.py`, …) are not required
-to score a new cohort. Checked-in CSVs are precomputed IDEAS outputs.
+Z-score CSVs and summary tables are **not** shipped; they are written here
+when you run the scorers / optional analysis scripts.

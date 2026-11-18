@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: >-
+  If you use this toolkit, please cite the upstream platforms and datasets
+  listed below (and any accompanying paper when available).
+title: "Normative modelling toolkit"
+version: 0.1.0
+date-released: "2026-11-17"
+authors:
+  - alias: phindagijimana
+license: MIT
+repository-code: "https://github.com/phindagijimana/normative"
+url: "https://github.com/phindagijimana/normative"
+type: software
+keywords:
+  - neuroimaging
+  - normative-modeling
+  - brain-morphometry
+  - connectomics
+  - epilepsy
+references:
+  - type: article
+    authors:
+      - family-names: Ge
+        given-names: Ruiyang
+      - family-names: Frangou
+        given-names: Sophia
+    title: "Normative modelling of brain morphometry across the lifespan with CentileBrain"
+    journal: "Lancet Digital Health"
+    year: 2024
+    doi: 10.1016/S2589-7500(23)00250-9
+  - type: article
+    authors:
+      - family-names: Rutherford
+        given-names: Saige
+      - family-names: Marquand
+        given-names: Andre F.
+    title: "The normative modeling framework for computational psychiatry"
+    journal: "Nature Protocols"
+    year: 2022
+    doi: 10.1038/s41596-022-00696-5
+  - type: article
+    authors:
+      - family-names: Taylor
+        given-names: Peter N.
+    title: "IDEAS — Imaging Database for Epilepsy and Surgery"
+    journal: "Epilepsia"
+    year: 2025
+    doi: 10.1111/epi.18192
