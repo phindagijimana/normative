@@ -1,67 +1,25 @@
-# Tutorial 1 — Score the IDEAS cohort
+# Tutorial 1 — Score IDEAS
 
-**Goal.** End-to-end morphometry Z-scores on the public IDEAS tables using
-CentileBrain (and optionally PCN).
-
-**Time.** ~30–60 min the first time (mostly model clones + download).
-
-**Prereqs.** {doc}`../installation` completed (Python, R `mfp`/`gamlss`,
-CentileBrain clone). PCN is optional for this tutorial.
-
-## 1. Get the working table
+**Goal.** Morphometry Z-scores on public IDEAS. **Prereq:** {doc}`../installation`
+(CentileBrain; PCN optional). First run ~30–60 min (clones + download).
 
 ```bash
 cd /path/to/normative
-pip install -r requirements.txt
-playwright install firefox
+cd ideas_data && python3 fetch_figshare.py && python3 load_ideas.py && cd ..
 
-cd ideas_data
-python3 fetch_figshare.py
-python3 load_ideas.py          # writes ideas_merged.csv
-cd ..
+Rscript score/score_centilebrain.R              # → score/ideas_zscores_*.csv
+Rscript score/score_centilebrain_gamlss.R       # optional
+python3 score/score_pcn_toolkit.py              # optional; needs PCN models
 ```
 
-Check: `ideas_data/ideas_merged.csv` exists and has columns `subject_id`,
-`cohort`, `sex`, `age`, plus `lh_*_thickness` regions.
+Check `ideas_merged.csv` has `subject_id`, `cohort`, `sex`, `age`, `lh_*_thickness`.
+IDEAS ages are **binned** → midpoints in `load_ideas.py` (disclose if publishing).
+Controls in `scoring_summary.txt` should be near mean 0 / SD 1 after adaptation.
 
-IDEAS ages are **binned** in the public release; `load_ideas.py` maps bins
-to midpoints. State that approximation if you publish results.
+**Next:** Tutorial 2 (`--input` / `--out-dir`). Schema: {doc}`../inputs`.
 
-## 2. Score CentileBrain MFP
-
-```bash
-Rscript score/score_centilebrain.R
-```
-
-Writes under `score/`:
-
-- `ideas_zscores_centilebrain.csv` — long-form Z
-- `ideas_zscores_wide.csv`
-- `scoring_summary.txt` — mean/SD of Z by cohort (controls should be near 0/1 after adaptation)
-
-## 3. Score GAMLSS (optional second backend)
-
-```bash
-Rscript score/score_centilebrain_gamlss.R
-```
-
-## 4. Score PCN Toolkit (optional)
-
-Needs the braincharts models from {doc}`../installation`.
-
-```bash
-python3 score/score_pcn_toolkit.py
-```
-
-## 5. What “reuse” looks like next
-
-You just ran the default IDEAS paths. Tutorial 2 shows the same commands
-with `--input` / `--out-dir` on **your** CSV. Schema: {doc}`../inputs`.
-
-## Troubleshooting
-
-| Symptom | Fix |
+| Problem | Fix |
 |---|---|
-| Figshare download fails / HTTP 202 | Install Playwright Firefox; check network to figshare.com |
-| Missing `.rds` models | Clone `centilebrain` at repo root |
-| R can’t find `mfp` | `install.packages("mfp")`; scripts also look in `~/R/library` |
+| Figshare / HTTP 202 | `playwright install firefox` |
+| Missing `.rds` | Clone `centilebrain` at repo root |
+| No R `mfp` | `install.packages("mfp")` |

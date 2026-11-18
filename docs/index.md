@@ -1,30 +1,17 @@
 # Normative modelling toolkit
 
-Apply published **brain-morphometry** normative models and optional
-**structural-connectome** normative analyses. The
-[IDEAS](https://doi.org/10.1111/epi.18192) epilepsy cohort is the worked
-example; the same entry points accept your own data when schemas match.
+Morphometry Z-scores (CentileBrain / PCN), single-subject PDFs (`normreport`),
+and connectome normative contrasts. IDEAS is the worked example; same tools
+reuse on your data.
 
 ```{image} https://img.shields.io/badge/source-phindagijimana%2Fnormative-blue
-:alt: Source repository
+:alt: Source
 :target: https://github.com/phindagijimana/normative
 ```
 
-## New here?
-
-1. {doc}`installation` — Python, R, CentileBrain / PCN model clones  
-2. {doc}`tutorials/index` — four short reuse tutorials  
-3. {doc}`methods` — what the science is doing (one page)
-
-## What this software does
-
-| Capability | Entry point |
-|---|---|
-| Cohort morphometry Z-scores (CentileBrain MFP / GAMLSS, PCN) | `score/` |
-| One FreeSurfer subject → PDF + Z-scores | `normreport/` |
-| Connectome edge / node / sublobe normative contrasts | `connectome_normative/` |
-
-## Documentation map
+1. {doc}`installation`  
+2. {doc}`tutorials/index`  
+3. {doc}`methods` (optional)
 
 ```{toctree}
 :maxdepth: 2
@@ -36,7 +23,7 @@ methods
 ```
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 :caption: Reference
 
 usage/morphometry
@@ -47,7 +34,4 @@ references
 building
 ```
 
-## Note
-
-This toolkit **wraps** published morphometry models; it does not retrain them.
-Connectome scripts fit normative models on **your** controls. Research use only.
+Wraps published morphometry models (does not retrain them). Research use only.

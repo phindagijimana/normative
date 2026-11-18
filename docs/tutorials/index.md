@@ -1,7 +1,6 @@
 # Tutorials
 
-Start here if you are new. Each tutorial is a short, copy-paste path.
-Install once ({doc}`../installation`), then pick a track.
+Install once ({doc}`../installation`), then:
 
 ```{toctree}
 :maxdepth: 1
@@ -12,15 +11,12 @@ Install once ({doc}`../installation`), then pick a track.
 04_connectome
 ```
 
-| # | Tutorial | You will |
-|---|---|---|
-| 1 | {doc}`01_ideas_morphometry` | Download IDEAS, score three morphometry backends |
-| 2 | {doc}`02_own_cohort` | Build your own table and reuse the same scorers |
-| 3 | {doc}`03_normreport` | Score one FreeSurfer subject → PDF report |
-| 4 | {doc}`04_connectome` | Run the connectome demo, then your matrices |
+| # | You will |
+|---|---|
+| 1 | Score IDEAS with CentileBrain (+ optional PCN) |
+| 2 | Reuse scorers on your cohort CSV |
+| 3 | One FreeSurfer subject → PDF (`normreport`) |
+| 4 | Connectome demo → your matrices |
 
-**Suggested order:** 1 → 2 for cohort reuse; jump to 3 for single-subject
-clinical-research reports; 4 is independent of morphometry models.
-
-After a tutorial, use the reference pages under **Usage** for flags and
-outputs, and {doc}`../inputs` for column contracts.
+Order: **1 → 2** for cohorts; **3** for single-subject; **4** independent.
+Flags/schemas: reference pages + {doc}`../inputs`.
