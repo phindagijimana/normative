@@ -7,6 +7,7 @@ normative analyses. IDEAS worked example; reusable on your data.
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **Documentation:** https://normative.readthedocs.io/  
+**Science guide (beginner → advanced):** https://normative.readthedocs.io/en/latest/methods/  
 **Source:** https://github.com/phindagijimana/normative  
 
 **License:** MIT (research use only) — see [`LICENSE`](LICENSE)  
@@ -14,8 +15,7 @@ normative analyses. IDEAS worked example; reusable on your data.
 
 ```bash
 git clone https://github.com/phindagijimana/normative.git && cd normative
-# follow https://normative.readthedocs.io/en/latest/installation.html
-# then https://normative.readthedocs.io/en/latest/tutorials/index.html
+# docs: install → methods (science) → tutorials
 ```
 
 | Folder | Role |

@@ -7,17 +7,22 @@ reuse on your data.
 **Source code:** <https://github.com/phindagijimana/normative>  
 **This documentation:** <https://normative.readthedocs.io/>
 
-1. {doc}`installation`  
-2. {doc}`tutorials/index`  
-3. {doc}`methods` (optional)
+## Paths
+
+| If you want to… | Go to |
+|---|---|
+| Install tools | {doc}`installation` |
+| Learn the science (beginner → advanced) | {doc}`methods/index` |
+| Run the software | {doc}`tutorials/index` |
+| Look up flags / schemas | Reference section below |
 
 ```{toctree}
 :maxdepth: 2
 :caption: Start
 
 installation
+methods/index
 tutorials/index
-methods
 ```
 
 ```{toctree}

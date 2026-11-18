@@ -1,6 +1,7 @@
 # Tutorials
 
-Install once ({doc}`../installation`), then:
+Install once ({doc}`../installation`). New to the science? Read
+{doc}`../methods/index` first (beginner → advanced).
 
 ```{toctree}
 :maxdepth: 1
