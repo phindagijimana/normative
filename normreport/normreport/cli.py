@@ -58,8 +58,8 @@ def main(subject: str, age: float, sex: str, subject_id: str | None,
     Wraps CentileBrain-MFP + CentileBrain-GAMLSS + PCN Toolkit-Bayesian
     backends in a single PDF report with cross-backend consensus flag.
 
-    For research use only. See the accompanying paper for validation
-    context and mu_hat.md for the site-adaptation methodology.
+    For research use only. Site adaptation follows Rutherford et al.,
+    Nature Protocols 2022.
     """
     subject_path = Path(subject)
     if subject_id is None:

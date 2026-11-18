@@ -1,14 +1,9 @@
 #!/usr/bin/env Rscript
-# Apply the CentileBrain pre-trained MFP models to the merged IDEAS table.
+# Apply CentileBrain pre-trained MFP models to a morphometry cohort table.
 #
-# Inputs (relative to the repo root, `Documents/Normative/`):
-#   - ideas_data/ideas_merged.csv    (per-subject, from load_ideas.py)
-#   - centilebrain/models/MFPmodels_<measure>_<sex>.rds
-#
-# Outputs:
-#   - score/ideas_zscores_centilebrain.csv     — long-form Z-scores
-#   - score/ideas_zscores_wide.csv             — wide table (one row per subject)
-#   - score/scoring_summary.txt                — mean/SD of Z per region per cohort
+# Defaults expect the IDEAS merge from ideas_data/load_ideas.py. Override with:
+#   --input PATH   --models DIR   --out-dir DIR
+# Schema: docs/INPUT_SCHEMA.md
 
 suppressPackageStartupMessages({
   .libPaths(c("~/R/library", .libPaths()))
@@ -24,9 +19,21 @@ ROOT <- if (length(file_arg) && nzchar(file_arg)) {
 } else {
   normalizePath("..")
 }
-IDEAS_CSV<- file.path(ROOT, "ideas_data/ideas_merged.csv")
-MODELS   <- file.path(ROOT, "centilebrain/models")
-OUT_DIR  <- file.path(ROOT, "score")
+
+user_args <- commandArgs(trailingOnly = TRUE)
+if ("--help" %in% user_args || "-h" %in% user_args) {
+  cat("Usage: Rscript score/score_centilebrain.R [--input PATH] [--models DIR] [--out-dir DIR]\n")
+  cat("Schema: docs/INPUT_SCHEMA.md\n")
+  quit(save = "no", status = 0)
+}
+parse_opt <- function(flag, default) {
+  i <- match(flag, user_args)
+  if (!is.na(i) && i < length(user_args)) return(user_args[[i + 1]])
+  default
+}
+IDEAS_CSV <- parse_opt("--input", file.path(ROOT, "ideas_data/ideas_merged.csv"))
+MODELS   <- parse_opt("--models", file.path(ROOT, "centilebrain/models"))
+OUT_DIR  <- parse_opt("--out-dir", file.path(ROOT, "score"))
 dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
 # ---------------------------------------------------------------------------
@@ -109,7 +116,7 @@ score_block <- function(sex, measure_label, region_cols, global_col,
   # Apply the standard PCN Toolkit site-adaptation procedure
   # (Rutherford et al., Nature Protocols 2022): estimate a per-region offset
   # `mu_hat` from the local healthy controls and add it to the model's
-  # centered predictions before Z-scoring. See ../mu_hat.md for the full
+  # centered predictions before Z-scoring (Rutherford et al. 2022).
   # methodology, citations, and sensitivity-test recommendations.
   # Control Z ≈ 0 is a property of the adaptation procedure, so Task 5's
   # SD-based calibration test is the informative one.

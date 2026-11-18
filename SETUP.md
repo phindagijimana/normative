@@ -1,96 +1,133 @@
 # Setup
 
-Everything a fresh workstation needs to reproduce the four validation tasks.
+What a fresh workstation needs to run the morphometry scorers, IDEAS
+downloaders, connectome scripts, and (optionally) `normreport`.
 
 ## System
 
-- **OS:** Linux (tested on RHEL 9)
-- **Disk footprint:** ~1.5 GB total
-  - IDEAS tabular data: ~4 MB
-  - CentileBrain models repo: ~960 MB (upstream clone)
-  - Playwright Firefox cache: ~330 MB
-  - Analysis outputs: ~15 MB
+- **OS:** Linux (tested on RHEL 9); macOS usually works for scoring if
+  models are present
+- **Disk (approximate):**
+  - This repo + IDEAS tables: tens of MB
+  - CentileBrain clone: ~960 MB (or ~40 MB if you keep only the six MFP `.rds` files)
+  - PCN Toolkit braincharts + extracted lifespan DK models: on the order of GB
+  - Playwright Firefox (IDEAS Figshare only): ~100–330 MB
 
-## Runtime
+## Python
 
-- **R** ≥ 4.0 (tested on 4.6.1). Install `mfp`:
-  ```r
-  install.packages("mfp", lib = "~/R/library",
-                   repos = "https://cloud.r-project.org")
-  ```
-- **Python** ≥ 3.9 with:
-  ```
-  pandas numpy scipy scikit-learn openpyxl pdfplumber playwright
-  ```
-- **Playwright Firefox** (for the Figshare AWS-WAF-gated share pages):
-  ```bash
-  pip install playwright
-  playwright install firefox    # downloads ~100 MB browser cache
-  ```
-
-## CentileBrain repo
-
-**Clone separately** — the upstream CentileBrain repo (~960 MB) is not
-bundled here (it's a full mirror of another public repository and does
-not belong in this codebase). Fetch it into the project root once:
+Python ≥ 3.9. From the repository root:
 
 ```bash
-cd ~/Documents/Normative
+pip install -r requirements.txt
+playwright install firefox   # only needed for ideas_data/fetch_*.py
+```
+
+For PCN cohort scoring also install:
+
+```bash
+pip install "pcntoolkit>=0.28"
+```
+
+(`normreport` pins its own deps via `normreport/pyproject.toml`; prefer
+Python 3.11+ there so `pcntoolkit>=1.0` installs cleanly.)
+
+## R
+
+R ≥ 4.0. Install:
+
+```r
+install.packages(c("mfp", "gamlss", "gamlss.dist"),
+                 repos = "https://cloud.r-project.org")
+```
+
+If you keep packages under `~/R/library`, the scoring scripts already
+prepend that path.
+
+Sanity check:
+
+```bash
+Rscript -e 'library(mfp); library(gamlss); cat("R packages OK\n")'
+```
+
+## CentileBrain models
+
+Not bundled. Clone next to this repo’s root (directory name must be
+`centilebrain/`):
+
+```bash
+cd /path/to/normative   # repository root
 git clone --depth 1 https://github.com/CentileBrain/centilebrain.git
 ```
 
-The repo contains the pre-trained `.rds` MFP model files, GAMLSS
-alternates, templates, and demo data.
+Expected paths:
 
-The scoring script (`score/score_centilebrain.R`) expects the models at
-`centilebrain/models/MFPmodels_<measure>_<sex>.rds`. If you relocate the
-folder, edit the `MODELS` path at the top of that file.
+- MFP: `centilebrain/models/MFPmodels_{thickness,surfacearea,subcorticalvolume}_{male,female}.rds`
+- GAMLSS: `centilebrain/models/GAMLSSmodels_*.rds`
 
-**Only the 6 MFP model files are strictly needed for our pipeline** —
-`centilebrain/models/MFPmodels_{thickness,surfacearea,subcorticalvolume}_{male,female}.rds`
-(~40 MB total). The remaining ~920 MB is the upstream GAMLSS alternates,
-brainAGE models, demos, and instructions — kept intact for reproducibility
-and to match what centilebrain.org publishes.
+Only the six MFP files are required for `score_centilebrain.R` (~40 MB).
+GAMLSS scoring needs the GAMLSS `.rds` files as well.
 
-**Pinning:** we validated against the CentileBrain repo state as of
-2026-09-18. If the upstream repo changes model layout, the region-order
-tables at the top of `score_centilebrain.R` may need updating.
+Override with `--models /other/path` on the R scorers if needed.
+
+**Pinning:** validated against the CentileBrain repo layout as of
+2026-09-18. If upstream renames templates, update the region-order
+tables at the top of `score/score_centilebrain.R`.
+
+## PCN Toolkit models
+
+Not bundled. Place the public braincharts checkout under
+`pcn_models/braincharts/` and extract the lifespan DK cortical-thickness
+bundle so this path exists:
+
+```text
+pcn_models/braincharts/models/lifespan_DK_ct/lifespan_DK_46K_59sites/
+```
+
+Also required alongside that checkout:
+
+```text
+pcn_models/braincharts/docs/phenotypes_ct_dk_lh.txt
+pcn_models/braincharts/docs/phenotypes_ct_dk_rh.txt
+pcn_models/braincharts/docs/phenotypes_sc.txt
+pcn_models/braincharts/docs/site_ids_ct_dk_59sites.txt
+pcn_models/braincharts/scripts/   # nm_utils used by score_pcn_toolkit.py
+```
+
+Upstream starting point:
+https://github.com/predictive-clinical-neuroscience/braincharts
+
+Then:
+
+```bash
+python3 score/score_pcn_toolkit.py --help
+```
 
 ## Firewall / network
 
-- **Figshare** downloads go via `figshare.com` (AWS WAF challenge — requires
-  Playwright, plain `curl` returns HTTP 202) and
-  `ndownloader.figshare.com` (plain HTTPS after we've resolved the file
-  IDs). Both must be reachable.
-- **CRAN mirror** for the R `mfp` package install.
-- **GitHub** for the CentileBrain clone.
+- **Figshare** (`figshare.com`, `ndownloader.figshare.com`) — IDEAS download
+  (Playwright required; plain `curl` often gets HTTP 202 from the WAF)
+- **CRAN** — R packages
+- **GitHub / PyPI** — CentileBrain clone, Python packages, braincharts
 
-## Environment sanity check
+## Not required for morphometry scoring
 
-Once installed, this one-liner should print `mfp loaded OK`:
+- FreeSurfer — IDEAS ships extracted stats; `normreport` can also ingest a
+  pre-exported stats CSV
+- ComBat / neuroHarmonize — not needed for single-site scoring with
+  control-based site adaptation
 
-```bash
-Rscript -e '.libPaths(c("~/R/library", .libPaths())); library(mfp); cat("mfp loaded OK\n")'
-```
-
-And this should print `playwright OK` + `firefox` binary path:
+## Environment sanity checks
 
 ```bash
+python3 -c "import pandas, numpy, scipy, sklearn; print('python OK')"
 python3 -c "from playwright.sync_api import sync_playwright; \
-  p = sync_playwright().start(); print('playwright OK'); \
-  print(p.firefox.executable_path); p.stop()"
+  p = sync_playwright().start(); print(p.firefox.executable_path); p.stop()"
+Rscript -e 'library(mfp); cat("mfp OK\n")'
+test -f centilebrain/models/MFPmodels_thickness_male.rds && echo "CentileBrain OK"
+test -d pcn_models/braincharts/models/lifespan_DK_ct/lifespan_DK_46K_59sites && echo "PCN OK"
 ```
 
-## Not required (but useful)
+## Data provenance (IDEAS)
 
-- **FreeSurfer** — not needed. The IDEAS Figshare release ships FreeSurfer
-  stats already extracted; we don't re-run recon-all.
-- **ComBat-GAM / neuroHarmonize** — not needed for single-site IDEAS.
-  Required only if extending to multi-site cohorts.
-
-## Data provenance
-
-All IDEAS Figshare files are re-fetched by
-`ideas_data/fetch_figshare.py` and `ideas_data/fetch_resection.py`. File IDs
-and byte counts are recorded in `ideas_data/manifest.json` at download
-time.
+`ideas_data/fetch_figshare.py` and `fetch_resection.py` re-download public
+tables; file IDs and sizes are recorded in `ideas_data/manifest.json`.

@@ -5,22 +5,16 @@ patient's FreeSurfer output + age + sex, runs multiple published
 normative-modelling backends and produces a single per-patient PDF
 report with cross-backend consensus/disagreement flagging.
 
-**Status:** v0.1.0 — initial release accompanying the validation
-manuscript. For research use only.
+**Status:** v0.1.0 — for research use only.
 
 Repository: <https://github.com/phindagijimana/normative>
 
 ## Why this tool exists
 
-Existing normative-modelling platforms distribute their pre-trained
-models via web apps (BrainMoNoCle, CentileBrain) or as research
-libraries (PCN Toolkit). None of them is a per-patient PDF report
-generator, and none of them runs multiple backends side-by-side.
-For a clinical-research pipeline that must run offline, produce
-audited reports, and provide a robustness check by comparing multiple
-normative-modelling approaches, this tool fills the gap.
-
-Full narrative: see `../paper_planning/tool.md` in the parent repository.
+Existing normative-modelling platforms distribute pre-trained models via
+web apps (BrainMoNoCle, CentileBrain) or research libraries (PCN Toolkit).
+`normreport` is an offline multi-backend per-patient PDF report generator
+with cross-backend consensus / disagreement flagging.
 
 ## Backends shipped
 
@@ -141,9 +135,9 @@ For clinical deployment at a different site, supply your own reference
 with `--reference /path/to/local_controls.csv`. The reference should be
 ≥ 30 healthy subjects per sex scanned on the same scanner and
 FreeSurfer-processed identically to the patients you will score.
-Site adaptation follows the PCN Toolkit protocol (Rutherford et al.,
-*Nature Protocols* 2022) — see `../mu_hat.md` in the parent repository
-for the methodology note and the sample-size sensitivity results.
+Site adaptation follows Rutherford et al., *Nature Protocols* 2022.
+Parent-repo helpers: `score/mu_hat_sample_size_sensitivity.R` and
+`docs/INPUT_SCHEMA.md`.
 
 ## Singularity container (advanced)
 

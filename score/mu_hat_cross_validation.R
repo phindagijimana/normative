@@ -7,7 +7,7 @@
 # controls removes the tautology and produces genuinely held-out control
 # Z-scores whose mean and SD are informative diagnostics.
 #
-# Procedure (mu_hat.md §8 Test 1):
+# Procedure (site-adaptation K-fold CV; Rutherford et al. 2022):
 #   * Stratified 5-fold split of the 100 IDEAS controls (sex × age band).
 #   * For each fold k: estimate mu_hat per region on 80 training controls
 #     (per-sex), apply to the 20 held-out controls.

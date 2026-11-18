@@ -1,56 +1,75 @@
-# Normative modelling tooling (IDEAS)
+# Normative modelling toolkit
 
-Code for applying pre-trained brain-morphometry normative models
-(CentileBrain MFP / GAMLSS and PCN Toolkit) to the IDEAS epilepsy
-cohort, plus the `normreport` CLI/container.
+Reusable tools for applying published brain-morphometry normative models
+(CentileBrain MFP / GAMLSS and PCN Toolkit) and for running a structural
+connectome normative analysis. The IDEAS epilepsy cohort is the worked
+example; the same entry points accept your own tables when they match the
+documented schemas.
 
-## Layout
+## Choose a path
 
-```
-Normative/
-├── README.md                 # this file
-├── SETUP.md                  # dependencies and external model clones
-├── ideas_data/               # download + load IDEAS tabular inputs
-├── score/                    # scoring scripts and analysis utilities
-├── normreport/               # CLI + container for per-patient reports
-└── connectome_normative/     # optional structural-connectome normative scripts
-```
+| Goal | Start here |
+|---|---|
+| Score **one FreeSurfer subject** → PDF + Z-scores | [`normreport/`](normreport/README.md) |
+| Score a **cohort table** (IDEAS or your own) | [`SETUP.md`](SETUP.md) → [`score/`](score/README.md) |
+| Build / understand the **IDEAS** working table | [`ideas_data/`](ideas_data/README.md) |
+| Structural **connectome** normative modelling | [`connectome_normative/`](connectome_normative/README.md) |
+| Input column contracts | [`docs/INPUT_SCHEMA.md`](docs/INPUT_SCHEMA.md) |
 
-Operational docs only: `SETUP.md`, `ideas_data/README.md`,
-`score/README.md`, `normreport/README.md`.
-
-## Quick start
-
-1. Install dependencies — see `SETUP.md`.
-2. Clone CentileBrain models and (optionally) PCN Toolkit model bundles
-   into the locations described in `SETUP.md`.
-3. Build the IDEAS working table:
+## Quick start (IDEAS morphometry)
 
 ```bash
-cd ideas_data
-python3 fetch_figshare.py
-python3 fetch_resection.py
-python3 load_ideas.py
-```
+# 1. Dependencies + model clones — see SETUP.md
+pip install -r requirements.txt
+# R: install.packages(c("mfp", "gamlss", "gamlss.dist"))
 
-4. Score with each backend:
+# 2. IDEAS working table
+cd ideas_data && python3 fetch_figshare.py && python3 fetch_resection.py && python3 load_ideas.py && cd ..
 
-```bash
+# 3. Score three backends
 Rscript score/score_centilebrain.R
 Rscript score/score_centilebrain_gamlss.R
 python3 score/score_pcn_toolkit.py
 ```
 
-5. Optional: install and run `normreport` — see `normreport/README.md`.
+## Quick start (your own morphometry cohort)
 
-## Connectome scripts
+1. Build a CSV matching [`docs/INPUT_SCHEMA.md`](docs/INPUT_SCHEMA.md)
+   (required: `subject_id`, `cohort`, `sex`, `age`, region columns; controls
+   must use `cohort=control` for site adaptation).
+2. Point the scorers at it:
 
-`connectome_normative/` contains scripts that fit a normative model to
-structural connectivity matrices. They do not use the CentileBrain or
-PCN morphometry models. See script docstrings for inputs and usage.
+```bash
+Rscript score/score_centilebrain.R --input /path/to/cohort.csv --out-dir /path/to/out
+Rscript score/score_centilebrain_gamlss.R --input /path/to/cohort.csv --out-dir /path/to/out
+python3 score/score_pcn_toolkit.py --input /path/to/cohort.csv --out-dir /path/to/out
+```
+
+Or score one subject at a time with `normreport` and a site-matched
+`--reference` control table.
+
+## Quick start (connectome)
+
+```bash
+python3 connectome_normative/multiscale_normative.py --demo --out /tmp/connectome_demo
+python3 connectome_normative/multiscale_normative.py --help
+```
+
+## Layout
+
+```
+├── README.md                 # this file
+├── SETUP.md                  # OS, R/Python, CentileBrain + PCN clones
+├── requirements.txt          # Python deps for score/ + connectome + ideas_data
+├── docs/INPUT_SCHEMA.md      # cohort + connectome input contracts
+├── ideas_data/               # download + merge IDEAS tabular inputs
+├── score/                    # cohort scorers + optional IDEAS analyses
+├── normreport/               # single-subject CLI + container
+└── connectome_normative/     # edge/node/sublobe connectome normative scripts
+```
 
 ## References
 
-- Ge R et al. *Lancet Digital Health* 2024 — CentileBrain.
-- Taylor P et al. *Epilepsia* 2025 — IDEAS.
-- Rutherford et al. *Nature Protocols* 2022 — site adaptation.
+- Ge et al., *Lancet Digital Health* 2024 — CentileBrain
+- Rutherford et al., *Nature Protocols* 2022 — site adaptation / PCN Toolkit
+- Taylor et al., *Epilepsia* 2025 — IDEAS

@@ -1,20 +1,20 @@
 """Apply the PCN Toolkit lifespan_DK_46K_59sites pre-trained models
 (Rutherford et al., eLife 2022 / Nature Protocols 2022; hierarchical
-Bayesian regression) to the IDEAS cohort.
+Bayesian regression) to a morphometry cohort table.
 
-Because IDEAS is a new scanning site (Newcastle 3T Prisma) not present
-in the 59 training sites, we use the PCN Toolkit's built-in adaptation
-mechanism: IDEAS controls (100) supply the adaptation data, IDEAS
-patients (442) are the test set. This is the PCN-specific implementation
-of the same site-adaptation principle we apply for the CentileBrain
-backends via mu_hat (Rutherford 2022; see ../mu_hat.md).
+Controls (`cohort=control`) supply the PCN adaptation set; other rows are
+the test set — the same site-adaptation idea as CentileBrain mu_hat
+(Rutherford et al., Nature Protocols 2022).
 
-Output schema matches score/score_centilebrain_gamlss.R:
-long-form CSV with columns
+Default input is ideas_data/ideas_merged.csv. Override with --input /
+--out-dir / --out-name. Schema: docs/INPUT_SCHEMA.md
+
+Output: long-form CSV with columns
     subject_id, cohort, sex, age, measure, region, observed, z
 """
 from __future__ import annotations
 
+import argparse
 import os
 import shutil
 import sys
@@ -28,7 +28,22 @@ ROOT = Path(__file__).resolve().parents[1]
 PCN_ROOT = ROOT / "pcn_models" / "braincharts"
 MODEL_DIR = PCN_ROOT / "models" / "lifespan_DK_ct" / "lifespan_DK_46K_59sites"
 DOCS = PCN_ROOT / "docs"
-OUT_DIR = ROOT / "score"
+
+_ap = argparse.ArgumentParser(
+    description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+)
+_ap.add_argument(
+    "--input",
+    type=Path,
+    default=ROOT / "ideas_data" / "ideas_merged.csv",
+    help="Morphometry cohort CSV (see docs/INPUT_SCHEMA.md)",
+)
+_ap.add_argument("--out-dir", type=Path, default=ROOT / "score")
+_ap.add_argument("--out-name", default="ideas_zscores_pcn.csv")
+_ARGS = _ap.parse_args()
+OUT_DIR = _ARGS.out_dir
+OUT_DIR.mkdir(parents=True, exist_ok=True)
+INPUT_CSV = _ARGS.input
 
 # PCNtoolkit scripts folder must be on path for nm_utils
 sys.path.insert(0, str(PCN_ROOT / "scripts"))
@@ -79,8 +94,8 @@ ASEG_MAP = {
     "Right-Accumbens-area": "Right-Accumbens-area",
 }
 
-# ---- Load IDEAS data + build the PCN-format frame -----------------------
-ideas = pd.read_csv(ROOT / "ideas_data" / "ideas_merged.csv")
+# ---- Load cohort table + build the PCN-format frame --------------------
+ideas = pd.read_csv(INPUT_CSV)
 ideas["sex"] = ideas["sex"].str.upper().str.strip()
 ideas = ideas[ideas["sex"].isin(["M", "F"])].copy()
 ideas = ideas[ideas["age"].notna()].copy()
@@ -214,7 +229,7 @@ for i, (ideas_name, pcn_name, measure) in enumerate(all_idps):
 
 # ---- Save + report ------------------------------------------------------
 long = pd.DataFrame(results_rows)
-out_csv = OUT_DIR / "ideas_zscores_pcn.csv"
+out_csv = OUT_DIR / _ARGS.out_name
 long.to_csv(out_csv, index=False)
 print(f"\nWrote {len(long)} rows to {out_csv}")
 print(f"Failed IDPs: {fail_count} / {len(all_idps)}")

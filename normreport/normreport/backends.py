@@ -17,8 +17,7 @@ Three backends ship:
                               (PCNBayesianStub).
 
 Site adaptation (mu_hat) follows Rutherford et al., Nature Protocols
-2022 — the field-standard procedure. See ../mu_hat.md for full
-methodology + citations.
+2022 — the field-standard procedure.
 """
 from __future__ import annotations
 

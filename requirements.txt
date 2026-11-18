@@ -1,0 +1,14 @@
+# Core deps for ideas_data/, score/*.py, and connectome_normative/
+pandas>=1.5
+numpy>=1.23
+scipy>=1.9
+scikit-learn>=1.2
+openpyxl>=3.0
+pdfplumber>=0.9
+matplotlib>=3.6
+
+# IDEAS Figshare downloaders only
+playwright>=1.40
+
+# Optional: PCN cohort scoring (score/score_pcn_toolkit.py)
+# pcntoolkit>=0.28

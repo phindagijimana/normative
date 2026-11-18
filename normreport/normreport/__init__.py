@@ -6,8 +6,6 @@ cross-backend consensus/disagreement flagging. Deployable inside
 credentialed clinical-research pipelines (Singularity container ships
 with the repository).
 
-The scientific validation this tool operationalises is described in the
-accompanying paper (see repository root: README.md, RESULTS.md, and
-paper_planning/).
+See the repository root README.md and SETUP.md for install and reuse.
 """
 __version__ = "0.1.0"

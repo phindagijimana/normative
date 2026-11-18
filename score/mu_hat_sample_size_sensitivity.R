@@ -6,7 +6,7 @@
 # recommendation from Rutherford et al. 2022 and Little et al. 2025
 # should be verifiable on IDEAS.
 #
-# Procedure (mu_hat.md §8 Test 2):
+# Procedure (mu_hat sample-size sensitivity; Rutherford et al. 2022):
 #   * Subsample controls at N ∈ {10, 20, 30, 50, 75, 100}
 #   * At each N, draw B = 100 random sex-stratified subsamples
 #   * Per subsample, per (region × sex): compute mu_hat = mean(obs − pred)

@@ -6,11 +6,11 @@ Mirrors the paper's HCP-EP experiment (Ge et al. 2024):
 * Report per-set AUC + a permutation test comparing them
 
 NOTE ON `mu_hat`: the site-adaptation offset is estimated once on all
-100 controls (see `score_centilebrain.R` and `../mu_hat.md`). This
+100 controls (see `score_centilebrain.R`). This
 introduces a small train-test leak for the classifier because those same
 controls appear in the SVC training folds. Nested cross-validation of the
 adaptation procedure closes the leak; expected to reduce the Z-score AUC
-only marginally. Documented as Test 1 in `mu_hat.md`.
+only marginally.
 """
 
 from pathlib import Path

@@ -1,157 +1,97 @@
-# `score/` — analysis pipeline and results
+# `score/` — cohort scoring and optional analyses
 
-Everything downstream of `ideas_data/ideas_merged.csv`. Scripts read the
-merged IDEAS table and the CentileBrain / PCN Toolkit model files, and
-write per-subject Z-scores and per-task summary tables. Nothing here
-depends on external network access at run-time (except the R packages
-`mfp` and `gamlss`, installed once from CRAN, and the `pcntoolkit`
-Python package, installed once from PyPI; see the parent `SETUP.md`).
+Apply pre-trained CentileBrain and PCN Toolkit models to a per-subject
+morphometry table, then (optionally) run IDEAS validation utilities.
 
-The files below are grouped by role rather than filesystem location.
+For column contracts see [`../docs/INPUT_SCHEMA.md`](../docs/INPUT_SCHEMA.md).
+For installs and model clones see [`../SETUP.md`](../SETUP.md).
 
-## 1. Scoring pipelines — one per normative backend
+## 1. Scorers (reuse these)
 
-| File | Language | Backend | Reads | Writes |
-|---|---|---|---|---|
-| `score_centilebrain.R` | R | CentileBrain-MFP | `../ideas_data/ideas_merged.csv` + `../centilebrain/models/MFPmodels_*.rds` | `ideas_zscores_centilebrain.csv`, `ideas_zscores_wide.csv`, `scoring_summary.txt` |
-| `score_centilebrain_gamlss.R` | R | CentileBrain-GAMLSS | Same + `../centilebrain/models/GAMLSSmodels_*.rds` | `ideas_zscores_centilebrain_gamlss.csv` |
-| `score_pcn_toolkit.py` | Python | PCN Toolkit (Rutherford 2022) | Same + `../pcn_models/braincharts/models/lifespan_DK_ct/` | `ideas_zscores_pcn.csv` |
-
-All three scripts apply site adaptation (Rutherford et al., *Nature
-Protocols* 2022). MFP and GAMLSS use an empirical per-region offset
-estimated from IDEAS's 100 healthy controls; PCN Toolkit uses its own
-built-in adaptation mechanism with the same controls as the adaptation
-set.
-
-## 2. Cross-backend comparisons
-
-| File | Purpose | Reads | Writes |
+| Script | Backend | Default input | Default outputs |
 |---|---|---|---|
-| `compare_mfp_gamlss.py` | 2-way MFP vs GAMLSS across Tasks 5–8 | The two CentileBrain Z-score CSVs | `task5_control_sd_mfp_vs_gamlss.csv`, `head_to_head_mfp_vs_gamlss_correlation.csv`, `task7_aucs_mfp_vs_gamlss.csv`, `task8_resection_rho_mfp_vs_gamlss.csv` |
-| `compare_all_three.py` | 3-way MFP vs GAMLSS vs PCN across Tasks 5, 6, 8 (cortical thickness, the common intersection). Does **not** compute pairwise Z–Z *r*. | All three backends' Z-score CSVs | `task5_three_backend_control_sd.csv`, `task6_three_backend_convergence.csv` (alias: `pearson_r_vs_ideas_summary.csv`), `task8_three_backend_resection.csv` |
-| `pairwise_z_pearson.py` | All 3 backend pairs: Pearson *r* of patient Z-scores | All three Z-score CSVs | `pearson_r_mfp_vs_gamlss.csv`, `pearson_r_mfp_vs_pcn_thickness.csv`, `pearson_r_gamlss_vs_pcn_thickness.csv`, `pearson_r_all_pairs_thickness.csv`, `pearson_r_all_pairs_summary.csv` |
-| `classify_all_three.py` | Task 7 AUC, all three backends, thickness only | All three Z-score CSVs | `task7_aucs_all_backends_thickness.csv`, `_summary.csv`, `_delta.csv` |
-| `compare_three_summary.py` | Fair three-way stack (SD, vs-IDEAS, AUC, resection, pairwise *r*) | Existing compare CSVs + Z-scores | `compare_three_summary.csv`, `compare_three_pairs.csv`, `task8_resection_all_backends_thickness.csv` |
-| `compare_three_extra.py` | Lateralisation, \|Z\|>1.96 call agreement, control tail rate | All three Z-score CSVs + metadata | `lateralization_all_backends_thickness.csv`, `abnormality_agreement_thickness.csv`, `control_tail_rate_thickness.csv`, `compare_three_extra_summary.csv` |
+| `score_centilebrain.R` | CentileBrain MFP | `ideas_data/ideas_merged.csv` | `ideas_zscores_centilebrain.csv`, `ideas_zscores_wide.csv`, `scoring_summary.txt` |
+| `score_centilebrain_gamlss.R` | CentileBrain GAMLSS | same | `ideas_zscores_centilebrain_gamlss.csv` |
+| `score_pcn_toolkit.py` | PCN Toolkit Bayesian | same | `ideas_zscores_pcn.csv` |
 
-**Which comparison file to use — do not delete the others.**
+All three apply **site adaptation** using rows with `cohort=control`
+(Rutherford et al., *Nature Protocols* 2022): MFP/GAMLSS via a per-region
+empirical offset; PCN via its built-in adaptation API.
 
-- **All three backends (fair, 68 thickness regions):** `compare_three_summary.csv` (SD, vs-IDEAS, AUC, resection) and `compare_three_extra_summary.csv` (laterality, control tails). Call agreement: `abnormality_agreement_thickness.csv`. Also under `CentileShare/compare/`.
-- **MFP vs GAMLSS only (150 regions):** `*_mfp_vs_gamlss*` files. Laterality 67%/65% is `lateralization_results.csv` — not comparable to thickness-only ~58%.
-- **Do not use as a three-way:** `task8_three_backend_resection.csv` (MFP/GAMLSS not thickness-restricted). Keep the file; use `task8_resection_all_backends_thickness.csv` instead.
-- **Aliases (same numbers, two names):** `head_to_head_mfp_vs_gamlss_correlation.csv` = `pearson_r_mfp_vs_gamlss.csv`; `task6_three_backend_convergence.csv` = `pearson_r_vs_ideas_summary.csv` (that one is each backend **vs IDEAS**, not vs each other); `ideas_vs_centilebrain_corr.csv` = `pearson_r_mfp_vs_ideas.csv`.
-- Full mapping: `CentileShare/compare/README.md`.
-- **Hypothesis (controls unnecessary):** rejected for MFP. `CentileShare/hypothesis/README.md`. `mu_hat` is estimated from controls, not a replacement for them.
-- **Figures:** `CentileShare/compare/figures/` (`plot_figures.py`).
-- **extras in compare/:** `mu_hat` robustness + 150-region laterality
-  (`CentileShare/compare/extras/`).
-
-## 3. `mu_hat` robustness suite
-
-| File | Test | Reads | Writes |
-|---|---|---|---|
-| `mu_hat_cross_validation.R` | K-fold cross-validation of the adaptation procedure | Same as the scoring scripts | `mu_hat_cv_results.csv` |
-| `mu_hat_sample_size_sensitivity.R` | `mu_hat` variance at N ∈ {10, 20, 30, 50, 75, 100} | Same | `mu_hat_sample_size_variance.csv` |
-
-## 4. Task-specific analyses
-
-### Task 5 — Calibration (per-region SD of Z on controls)
-
-| File | Output |
-|---|---|
-| `analyze_scores.py` | Aggregates Task 5 + Task 6 for MFP; writes `per_region_controls_summary.csv` |
-| `task5_control_sd_mfp_vs_gamlss.csv` | Side-by-side per-region SD, MFP vs GAMLSS |
-| `task5_three_backend_control_sd.csv` | Per-region SD, MFP + GAMLSS + PCN, cortical thickness only |
-
-### Task 6 — Convergence with IDEAS-internal ComBat Z-scores
-
-| File | Output |
-|---|---|
-| `ideas_vs_centilebrain_corr.csv` / `pearson_r_mfp_vs_ideas.csv` | Per-region Pearson r, MFP vs IDEAS-internal, all measures |
-| `ideas_vs_all_backends_thickness_r.csv` / `pearson_r_vs_ideas_all_backends_thickness.csv` | Per-region r, MFP + GAMLSS + PCN vs IDEAS, thickness |
-| `head_to_head_mfp_vs_gamlss_correlation.csv` / `pearson_r_mfp_vs_gamlss.csv` | Per-region r, MFP vs GAMLSS (algorithm agreement) |
-| `pearson_r_mfp_vs_pcn_thickness.csv` | Per-region r, MFP vs PCN, thickness |
-| `pearson_r_gamlss_vs_pcn_thickness.csv` | Per-region r, GAMLSS vs PCN, thickness |
-| `pearson_r_all_pairs_thickness.csv` | Per-region r for all three pairs, thickness |
-| `task6_three_backend_convergence.csv` / `pearson_r_vs_ideas_summary.csv` | Summary of median r per backend **vs IDEAS** (not backend vs backend) |
-
-### Task 7 — Epilepsy vs control classification
-
-| File | Purpose |
-|---|---|
-| `classify_epilepsy.py` | Linear-SVC benchmark, MFP Z vs raw morphometry |
-| `classification_aucs.csv` | Per-repeat AUCs across 100 × 5-fold CV |
-| `task7_aucs_mfp_vs_gamlss.csv` | Per-repeat AUCs, MFP vs GAMLSS, 150 regions |
-| `classify_all_three.py` | Linear-SVC, MFP + GAMLSS + PCN on 68 thickness regions |
-| `task7_aucs_all_backends_thickness.csv` | Per-repeat AUCs, all three backends |
-| `task7_aucs_all_backends_thickness_summary.csv` | Mean AUC + 95% CI |
-| `task7_aucs_all_backends_thickness_delta.csv` | Pairwise ΔAUC |
-
-### Task 8 — Resection concordance
-
-| File | Purpose |
-|---|---|
-| `resection_concordance.py` | Per-subject Spearman ρ (\|Z\| vs resection %), MFP + GAMLSS |
-| `resection_concordance.csv` | Per-subject ρ, MFP (430 rows) |
-| `task8_resection_rho_mfp_vs_gamlss.csv` | Per-subject ρ, both algorithms |
-| `task8_three_backend_resection.csv` | Summary table of mean ρ per backend |
-
-### Clinical extensions (Tasks 5a and 6a in the manuscript)
-
-| File | Purpose |
-|---|---|
-| `hemispheric_lateralization.py` | Does more-deviant hemisphere identify Op_Side? Per-algorithm + per-pathology accuracy |
-| `lateralization_results.csv` | Accuracy, sensitivity per side, chi-square p, per pathology (14 rows) |
-| `ilae_outcome_prediction.py` | Ridge logistic regression: preop Z-scores → ILAE-1 seizure-freedom AUC |
-| `ilae_outcome_aucs.csv` | AUC + 95% CI + ΔAUC (Z − raw) + permutation p per algorithm |
-
-## 5. Per-subject Z-score outputs (the paper's Contribution #5)
-
-| File | Rows | Contents |
-|---|---:|---|
-| `ideas_zscores_centilebrain.csv` | 81,300 | Long-form MFP Z-scores: subject × measure × region × observed × predicted × RMSE_m × z |
-| `ideas_zscores_centilebrain_gamlss.csv` | 81,300 | Long-form GAMLSS Z-scores: subject × measure × region × observed × distribution params × centile × z_raw × z_shift × z |
-| `ideas_zscores_pcn.csv` | 36,856 | Long-form PCN Toolkit Z-scores (cortical thickness only): subject × measure × region × observed × pcn_region × z |
-| `ideas_zscores_wide.csv` | 1,626 | Wide MFP table: one row per (subject, measure), one column per region |
-
-## Reproducing everything from scratch
-
-From the repository root:
+### CLI
 
 ```bash
-# Prerequisites — see ../SETUP.md
-# 1. R packages: mfp, gamlss (from CRAN, one-time)
-# 2. Python: pandas, numpy, scipy, scikit-learn, pcntoolkit (from PyPI)
-# 3. CentileBrain repo cloned at ../centilebrain/
-# 4. PCN Toolkit braincharts cloned at ../pcn_models/braincharts/
-#    with lifespan_DK_46K_59sites.zip extracted into
-#    ../pcn_models/braincharts/models/lifespan_DK_ct/
+# Defaults (IDEAS layout after load_ideas.py)
+Rscript score/score_centilebrain.R
+Rscript score/score_centilebrain_gamlss.R
+python3 score/score_pcn_toolkit.py
 
-# Score all three backends (~15 min total)
-Rscript score_centilebrain.R
-Rscript score_centilebrain_gamlss.R
-python3 score_pcn_toolkit.py
+# Your own table
+Rscript score/score_centilebrain.R \
+  --input /path/to/cohort.csv \
+  --models /path/to/centilebrain/models \
+  --out-dir /path/to/out
 
-# Run comparisons + task analyses (~10 min total; dominated by SVC × 100 repeats)
+Rscript score/score_centilebrain_gamlss.R \
+  --input /path/to/cohort.csv \
+  --models /path/to/centilebrain/models \
+  --out-dir /path/to/out
+
+python3 score/score_pcn_toolkit.py \
+  --input /path/to/cohort.csv \
+  --out-dir /path/to/out \
+  --out-name my_zscores_pcn.csv
+```
+
+Long-form Z-score columns (common idea across backends):
+`subject_id`, `cohort`, `sex`, `age`, `measure`, `region`, `observed`, `z`
+(plus backend-specific prediction / distribution columns).
+
+## 2. Site-adaptation checks
+
+| Script | What it does |
+|---|---|
+| `mu_hat_cross_validation.R` | K-fold CV of the control offset on held-out controls |
+| `mu_hat_sample_size_sensitivity.R` | Offset variance vs control N ∈ {10,…,100} |
+| `mfpr_with_vs_without_stats.py` | MFP Z with vs without the control offset |
+
+## 3. Optional IDEAS analysis utilities
+
+These expect the default IDEAS Z-score CSVs in `score/` and the merged
+IDEAS metadata. Useful to reproduce the IDEAS validation suite; not
+required to score a new cohort.
+
+| Area | Scripts |
+|---|---|
+| Summaries / calibration | `analyze_scores.py`, `compare_mfp_gamlss.py`, `compare_all_three.py`, `compare_three_summary.py`, `compare_three_extra.py`, `pairwise_z_pearson.py` |
+| Classification | `classify_epilepsy.py`, `classify_all_three.py` |
+| Resection / laterality / outcome | `resection_concordance.py`, `hemispheric_lateralization.py`, `ilae_outcome_prediction.py`, `bootstrap_lateralization_resection.py` |
+| Other | `subgroup_analyses.py`, `power_calculation_negatives.py`, `mu_hat_age_bin_sensitivity.py` |
+
+### Reproduce the IDEAS suite (after scoring)
+
+```bash
+cd score
 python3 analyze_scores.py
 python3 classify_epilepsy.py
 python3 resection_concordance.py
 python3 compare_mfp_gamlss.py
 python3 compare_all_three.py
-python3 pairwise_z_pearson.py   # all 3 pairwise Pearson r of Z-scores
-python3 classify_all_three.py   # Task 7 AUC, all three backends, thickness
-python3 compare_three_summary.py  # fair three-way summary table
-python3 compare_three_extra.py    # laterality, abnormal calls, control tails
-
-# mu_hat robustness (~5 min)
+python3 pairwise_z_pearson.py
+python3 classify_all_three.py
+python3 compare_three_summary.py
+python3 compare_three_extra.py
 Rscript mu_hat_cross_validation.R
 Rscript mu_hat_sample_size_sensitivity.R
-
-# Clinical extensions (~5 min)
 python3 hemispheric_lateralization.py
 python3 ilae_outcome_prediction.py
 ```
 
-Total end-to-end runtime: ~30 min on a workstation. The pipeline is
-deterministic given fixed random seeds (already set in every script
-that uses randomness).
+Runtime is on the order of ~30 minutes on a workstation. Scripts that
+use randomness set fixed seeds.
+
+## 4. Checked-in CSV products
+
+Many `*.csv` files in this folder are precomputed IDEAS outputs so you can
+inspect results without re-running. Re-run the scripts above to refresh
+them. Prefer regenerating rather than editing by hand.

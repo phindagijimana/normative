@@ -24,21 +24,15 @@ REPO = Path(__file__).resolve().parents[1]
 
 SCORE = REPO / "score"
 IDEAS = REPO / "ideas_data"
-SHARE = REPO / "CentileShare" / "hypothesis"
 THRESH = 1.96
-FIG_DIRS = [
-    REPO / "manuscript" / "figures",
-    REPO / "CentileShare" / "hypothesis" / "figures",
-    REPO / "CentileShare" / "compare" / "figures",
-]
+FIG_DIRS = [SCORE / "figures"]
 
 
 def write(name: str, df: pd.DataFrame) -> None:
-    for d in (SCORE, SHARE):
-        d.mkdir(parents=True, exist_ok=True)
-        path = d / name
-        df.to_csv(path, index=False)
-        print(f"wrote {path}")
+    SCORE.mkdir(parents=True, exist_ok=True)
+    path = SCORE / name
+    df.to_csv(path, index=False)
+    print(f"wrote {path}")
 
 
 def cohen_kappa(a: np.ndarray, b: np.ndarray) -> float:

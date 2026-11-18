@@ -183,7 +183,7 @@ def build_report(subject_id: str, age: float, sex: str,
         "reference cohort is IDEAS-controls-2025 (100 UK controls scanned "
         "on Newcastle 3T Siemens Prisma); for clinical deployment, use a "
         "site-matched reference cohort with ≥ 30 subjects per sex "
-        "(see the accompanying paper's mu_hat.md for methodology). "
+        "(Rutherford et al., <i>Nature Protocols</i> 2022). "
         "Backend citations: CentileBrain — Ge et al., <i>Lancet Digital "
         "Health</i> 2024; PCN Toolkit — Rutherford et al., <i>Nature "
         "Protocols</i> 2022; BrainMoNoCle (optional) — Little et al., "

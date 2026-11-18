@@ -11,8 +11,9 @@
 #   centile = pBCCGo(y, mu, sigma, nu)   (or pBCPEo(...) for area with 4 params)
 #   Z       = qnorm(centile)
 #
-# We optionally add PCN Toolkit site adaptation on top (mu_hat, per mu_hat.md).
-# This lets us compare raw GAMLSS Z-scores to site-adapted GAMLSS Z-scores.
+# Site adaptation: per-region control offset (mu_hat; Rutherford et al. 2022).
+# Override paths with: --input PATH  --models DIR  --out-dir DIR
+# Schema: docs/INPUT_SCHEMA.md
 
 suppressPackageStartupMessages({
   .libPaths(c("~/R/library", .libPaths()))
@@ -29,9 +30,22 @@ ROOT <- if (length(file_arg) && nzchar(file_arg)) {
 } else {
   normalizePath("..")
 }
-IDEAS_CSV <- file.path(ROOT, "ideas_data/ideas_merged.csv")
-MODELS    <- file.path(ROOT, "centilebrain/models")
-OUT_DIR   <- file.path(ROOT, "score")
+
+user_args <- commandArgs(trailingOnly = TRUE)
+if ("--help" %in% user_args || "-h" %in% user_args) {
+  cat("Usage: Rscript score/score_centilebrain_gamlss.R [--input PATH] [--models DIR] [--out-dir DIR]\n")
+  cat("Schema: docs/INPUT_SCHEMA.md\n")
+  quit(save = "no", status = 0)
+}
+parse_opt <- function(flag, default) {
+  i <- match(flag, user_args)
+  if (!is.na(i) && i < length(user_args)) return(user_args[[i + 1]])
+  default
+}
+IDEAS_CSV <- parse_opt("--input", file.path(ROOT, "ideas_data/ideas_merged.csv"))
+MODELS    <- parse_opt("--models", file.path(ROOT, "centilebrain/models"))
+OUT_DIR   <- parse_opt("--out-dir", file.path(ROOT, "score"))
+dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
 DK_ORDER <- c(
   "bankssts", "caudalanteriorcingulate", "caudalmiddlefrontal", "cuneus",
