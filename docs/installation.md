@@ -36,4 +36,4 @@ Rscript -e 'library(mfp); library(gamlss); cat("R OK\n")'
 test -f centilebrain/models/MFPmodels_thickness_male.rds && echo CentileBrain OK
 ```
 
-Next: {doc}`tutorials/index`.
+Next: {doc}`science/index` (theory) and/or {doc}`toolkit/index` → {doc}`tutorials/index`.
