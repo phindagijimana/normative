@@ -14,7 +14,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import spearmanr
 
-ROOT = Path("/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative")
+ROOT = Path(__file__).resolve().parents[1]
 
 # ---- Resection percentages (regions × subjects, transposed) ---------------
 res = pd.read_csv(ROOT / "ideas_data/table_resected.csv")

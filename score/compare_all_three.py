@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import spearmanr
 
-ROOT = Path("/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative")
+ROOT = Path(__file__).resolve().parents[1]
 
 mfp = pd.read_csv(ROOT / "score/ideas_zscores_centilebrain.csv")
 gml = pd.read_csv(ROOT / "score/ideas_zscores_centilebrain_gamlss.csv")

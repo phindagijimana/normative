@@ -28,7 +28,15 @@ suppressPackageStartupMessages({
   library(gamlss)
 })
 
-ROOT      <- "/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative"
+cmd_args <- commandArgs(trailingOnly = FALSE)
+file_arg <- sub("^--file=", "", cmd_args[grep("^--file=", cmd_args)])
+ROOT <- if (length(file_arg) && nzchar(file_arg)) {
+  normalizePath(file.path(dirname(file_arg), ".."))
+} else if (dir.exists("score")) {
+  normalizePath(".")
+} else {
+  normalizePath("..")
+}
 IDEAS_CSV <- file.path(ROOT, "ideas_data/ideas_merged.csv")
 MODELS    <- file.path(ROOT, "centilebrain/models")
 OUT_DIR   <- file.path(ROOT, "score")

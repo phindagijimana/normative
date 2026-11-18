@@ -16,9 +16,7 @@ from scipy.stats import spearmanr
 
 HERE = Path(__file__).resolve().parent
 BUNDLE = HERE.parent
-REPO = Path("/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative")
-if not REPO.exists():
-    REPO = Path("/mnt/nfs/home/urmc-sh.rochester.edu/pndagiji/Documents/Normative")
+REPO = Path(__file__).resolve().parents[1]
 
 Z_DIR = BUNDLE / "CentileBrain"
 if not (Z_DIR / "ideas_zscores_centilebrain.csv").exists():

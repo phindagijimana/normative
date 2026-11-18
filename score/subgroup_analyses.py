@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import pearsonr
 
-ROOT = Path("/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative")
+ROOT = Path(__file__).resolve().parents[1]
 SCORE = ROOT / "score"
 
 AGE_BANDS = [(17.5, 30.0, "17-29"),

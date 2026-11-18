@@ -24,7 +24,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-ROOT = Path("/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative")
+ROOT = Path(__file__).resolve().parents[1]
 PCN_ROOT = ROOT / "pcn_models" / "braincharts"
 MODEL_DIR = PCN_ROOT / "models" / "lifespan_DK_ct" / "lifespan_DK_46K_59sites"
 DOCS = PCN_ROOT / "docs"

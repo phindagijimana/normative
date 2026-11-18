@@ -16,7 +16,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import roc_auc_score
 
-ROOT = Path("/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative")
+ROOT = Path(__file__).resolve().parents[1]
 
 # ---- Load both algorithm outputs ------------------------------------------
 mfp = pd.read_csv(ROOT / "score/ideas_zscores_centilebrain.csv")

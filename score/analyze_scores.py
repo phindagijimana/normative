@@ -10,7 +10,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-ROOT = Path("/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative")
+ROOT = Path(__file__).resolve().parents[1]
 Z = pd.read_csv(ROOT / "score/ideas_zscores_centilebrain.csv")
 
 print("=" * 70)

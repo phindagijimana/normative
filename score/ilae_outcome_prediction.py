@@ -25,7 +25,7 @@ RNG = np.random.default_rng(20260919)
 N_REPEATS = 100
 N_SPLITS = 5
 
-ROOT = Path("/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative")
+ROOT = Path(__file__).resolve().parents[1]
 
 # ---- Load Z-scores + raw features + metadata -----------------------------
 mfp = pd.read_csv(ROOT / "score/ideas_zscores_centilebrain.csv")

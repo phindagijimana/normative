@@ -104,13 +104,22 @@ def _run_r_scoring_script(script_name: str, subject_row: dict,
     r_wrap = tmpdir / f"wrap_{script_name}"
     contents = r_script_src.read_text()
     # Redirect the hard-coded ROOT + IDEAS_CSV + OUT_DIR to our tmpdir
+    import re as _re
+    # Drop any portable ROOT detection block and pin the wrapper root.
+    contents = _re.sub(
+        r"(?ms)^cmd_args <- commandArgs\(trailingOnly = FALSE\).*?"
+        r"^ROOT <- if \(length\(file_arg\).*?^\}\n",
+        f'ROOT <- "{REPO_ROOT}"\n',
+        contents,
+        count=1,
+    )
+    contents = _re.sub(
+        r'(?m)^ROOT\s*<-.*$',
+        f'ROOT <- "{REPO_ROOT}"',
+        contents,
+        count=1,
+    )
     contents = contents.replace(
-        'ROOT     <- "/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative"',
-        f'ROOT     <- "{REPO_ROOT}"'
-    ).replace(
-        'ROOT      <- "/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative"',
-        f'ROOT      <- "{REPO_ROOT}"'
-    ).replace(
         'IDEAS_CSV<- file.path(ROOT, "ideas_data/ideas_merged.csv")',
         f'IDEAS_CSV<- "{merged_path}"'
     ).replace(

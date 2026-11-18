@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import chi2_contingency
 
-ROOT = Path("/mnt/nfs/home/URMC-SH/pndagiji/Documents/Normative")
+ROOT = Path(__file__).resolve().parents[1]
 
 # ---- Load Z-scores + metadata --------------------------------------------
 mfp = pd.read_csv(ROOT / "score/ideas_zscores_centilebrain.csv")
