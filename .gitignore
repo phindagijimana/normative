@@ -46,19 +46,20 @@ pcn_models/
 # Personal / regenerable connectome artefacts (do not publish)
 connectome_normative/email_reply_draft.md
 connectome_normative/covariates_ideas.csv
+connectome_normative/PROTOCOL.md
 
-# Paper artefacts (manuscript, planning docs, results narrative,
-# interpretive analysis notes, outreach correspondence). These live on
-# a local-only `paper` branch and are intentionally excluded from the
-# public `main` branch. Do not commit these paths on main.
+# Research documentation and paper artefacts — local only; do not publish.
 manuscript/
 paper_planning/
+papers/
+CentileShare/
 RESULTS.md
+REPRODUCIBILITY.md
+implementation_bundle_README.md
+mu_hat.md
+normative.md
 score/MU_HAT_ROBUSTNESS.md
 score/CLINICAL_EXTENSIONS.md
 score/supp_table_s3_age_bin_sensitivity.csv
+tool_design/
 tool_design/email_*.md
-
-# Voice-reference PDFs used during manuscript authoring (author's prior
-# published paper). Kept locally, not distributed.
-papers/
