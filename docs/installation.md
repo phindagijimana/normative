@@ -78,3 +78,7 @@ test -d pcn_models/braincharts/models/lifespan_DK_ct/lifespan_DK_46K_59sites && 
 
 - FreeSurfer re-run (IDEAS ships extracted stats; `normreport` accepts a stats CSV)
 - ComBat / neuroHarmonize for single-site scoring with local controls
+
+## Next
+
+Go to {doc}`tutorials/index` (IDEAS → own cohort → normreport → connectome).

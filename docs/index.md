@@ -10,45 +10,44 @@ example; the same entry points accept your own data when schemas match.
 :target: https://github.com/phindagijimana/normative
 ```
 
+## New here?
+
+1. {doc}`installation` — Python, R, CentileBrain / PCN model clones  
+2. {doc}`tutorials/index` — four short reuse tutorials  
+3. {doc}`methods` — what the science is doing (one page)
+
 ## What this software does
 
-1. **Cohort morphometry scoring** — CentileBrain MFP / GAMLSS and PCN Toolkit
-   Bayesian models → regional Z-scores with site adaptation.
-2. **Single-subject reports** — `normreport` CLI / container → PDF + Z-score
-   table from one FreeSurfer subject.
-3. **Connectome normative modelling** — control-fit edge models, patient
-   deviations, group contrasts at connection / node / sublobe scales.
-
-## Choose a path
-
-| Goal | Page |
+| Capability | Entry point |
 |---|---|
-| Install dependencies and model files | {doc}`installation` |
-| Run IDEAS or your own cohort end-to-end | {doc}`usage/quickstart` |
-| Cohort scorers (CLI + outputs) | {doc}`usage/morphometry` |
-| One subject → PDF | {doc}`usage/normreport` |
-| Connectome pipeline | {doc}`usage/connectome` |
-| Input column contracts | {doc}`inputs` |
-| Short methods / science overview | {doc}`methods` |
-| Citations | {doc}`references` |
+| Cohort morphometry Z-scores (CentileBrain MFP / GAMLSS, PCN) | `score/` |
+| One FreeSurfer subject → PDF + Z-scores | `normreport/` |
+| Connectome edge / node / sublobe normative contrasts | `connectome_normative/` |
+
+## Documentation map
 
 ```{toctree}
 :maxdepth: 2
-:caption: Documentation
+:caption: Start
 
 installation
-usage/quickstart
+tutorials/index
+methods
+```
+
+```{toctree}
+:maxdepth: 2
+:caption: Reference
+
 usage/morphometry
 usage/normreport
 usage/connectome
 inputs
-methods
 references
 building
 ```
 
 ## Note
 
-This toolkit **wraps** published models (CentileBrain, PCN Toolkit). It does
-not retrain those morphometry models. Connectome scripts fit normative models
-on **your** control connectomes. For research use.
+This toolkit **wraps** published morphometry models; it does not retrain them.
+Connectome scripts fit normative models on **your** controls. Research use only.

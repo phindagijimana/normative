@@ -1,6 +1,9 @@
 # Building and publishing docs
 
-## Local HTML (QSIPrep / Sphinx style)
+Canonical user content lives under `docs/` (tutorials, install, methods,
+usage reference). Package `README`s are short pointers only.
+
+## Local HTML
 
 ```bash
 pip install -r docs/requirements.txt
@@ -12,19 +15,10 @@ Open `docs/_build/html/index.html`.
 ## Read the Docs
 
 1. Sign in at https://readthedocs.org/ with GitHub.
-2. Import **phindagijimana/normative**.
-3. Use the repo’s [`.readthedocs.yaml`](https://github.com/phindagijimana/normative/blob/main/.readthedocs.yaml)
-   (already points at `docs/conf.py`).
-4. After the first build, the site URL is typically:
-
-   `https://normative.readthedocs.io/`  
-   (exact slug depends on the RTD project name you choose)
-
-5. Optional: add a badge to the root README once the project exists:
+2. Import **phindagijimana/normative** (uses `.readthedocs.yaml`).
+3. Site URL is typically `https://<project-slug>.readthedocs.io/`.
+4. Optional README badge after the first successful build:
 
    ```markdown
-   [![Docs](https://readthedocs.org/projects/normative/badge/?version=latest)](https://normative.readthedocs.io/)
+   [![Docs](https://readthedocs.org/projects/<slug>/badge/?version=latest)](https://<slug>.readthedocs.io/)
    ```
-
-No research manuscript content is included — only install, usage, schemas,
-and a short methods overview.

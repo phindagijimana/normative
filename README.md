@@ -1,71 +1,43 @@
 # Normative modelling toolkit
 
-Reusable tools for applying published brain-morphometry normative models
-(CentileBrain MFP / GAMLSS and PCN Toolkit) and for structural-connectome
-normative analysis. IDEAS is the worked example; the same entry points accept
-your own data when schemas match.
+Score brain morphometry with CentileBrain / PCN Toolkit, generate
+single-subject PDF reports (`normreport`), or run structural-connectome
+normative analyses. IDEAS is the worked example; the same tools reuse on
+your data.
 
-**Documentation (Read the Docs style):** see [`docs/`](docs/index.md) — build
-locally with Sphinx, or enable the project on
-[Read the Docs](https://readthedocs.org/) (config: [`.readthedocs.yaml`](.readthedocs.yaml)).
+**Docs (canonical):** [`docs/index.md`](docs/index.md)  
+Build HTML: `pip install -r docs/requirements.txt && sphinx-build -b html docs docs/_build/html`
 
-[![Documentation](https://img.shields.io/badge/docs-Sphinx%20%2F%20RTD-blue)](docs/index.md)
+[![Docs](https://img.shields.io/badge/docs-Sphinx-blue)](docs/index.md)
 [![Source](https://img.shields.io/badge/source-GitHub-black)](https://github.com/phindagijimana/normative)
 
-## Choose a path
+## Start here
 
-| Goal | Start here |
+| Step | Link |
 |---|---|
-| Full docs (install, usage, methods) | [`docs/index.md`](docs/index.md) |
-| Score **one FreeSurfer subject** → PDF | [`normreport/`](normreport/README.md) |
-| Score a **cohort table** | [`docs/usage/morphometry.md`](docs/usage/morphometry.md) |
-| Structural **connectome** modelling | [`docs/usage/connectome.md`](docs/usage/connectome.md) |
-| Input column contracts | [`docs/inputs.md`](docs/inputs.md) |
-| Short methods / science | [`docs/methods.md`](docs/methods.md) |
-
-## Quick start (IDEAS morphometry)
+| Install | [`docs/installation.md`](docs/installation.md) |
+| Tutorials (IDEAS → own data → normreport → connectome) | [`docs/tutorials/`](docs/tutorials/index.md) |
+| Methods (short science) | [`docs/methods.md`](docs/methods.md) |
+| Input schemas | [`docs/inputs.md`](docs/inputs.md) |
 
 ```bash
-pip install -r requirements.txt
-# R: install.packages(c("mfp", "gamlss", "gamlss.dist"))
-# clone CentileBrain (+ optional PCN) — see docs/installation.md
-
-cd ideas_data && python3 fetch_figshare.py && python3 load_ideas.py && cd ..
-Rscript score/score_centilebrain.R
-Rscript score/score_centilebrain_gamlss.R
-python3 score/score_pcn_toolkit.py
+git clone https://github.com/phindagijimana/normative.git
+cd normative
+# then follow docs/installation.md and docs/tutorials/
 ```
 
-## Quick start (your own cohort)
+## Package folders
 
-```bash
-Rscript score/score_centilebrain.R --input cohort.csv --out-dir out/
-python3 score/score_pcn_toolkit.py --input cohort.csv --out-dir out/
-```
+| Folder | Role | Local README |
+|---|---|---|
+| `ideas_data/` | Download / merge IDEAS tables | pointer + IDEAS caveats |
+| `score/` | Cohort scorers | pointer + script list |
+| `normreport/` | Single-subject CLI / container | pointer + quick demo |
+| `connectome_normative/` | Connectome normative CLI | pointer + `--demo` |
 
-Schema: [`docs/inputs.md`](docs/inputs.md).
-
-## Build the docs site locally
-
-```bash
-pip install -r docs/requirements.txt
-sphinx-build -b html docs docs/_build/html
-# open docs/_build/html/index.html
-```
-
-## Layout
-
-```
-├── docs/                     # Sphinx / Read the Docs site
-├── SETUP.md                  # short install mirror (see docs/installation.md)
-├── ideas_data/               # IDEAS download + merge
-├── score/                    # cohort scorers + optional analyses
-├── normreport/               # single-subject CLI + container
-└── connectome_normative/     # connectome normative scripts
-```
+Full narrative and tutorials live under `docs/` only (avoids duplicate guides).
 
 ## References
 
-- Ge et al., *Lancet Digital Health* 2024 — CentileBrain
-- Rutherford et al., *Nature Protocols* 2022 — site adaptation / PCN Toolkit
-- Taylor et al., *Epilepsia* 2025 — IDEAS
+Ge et al. 2024 (CentileBrain); Rutherford et al. 2022 (site adaptation / PCN);
+Taylor et al. 2025 (IDEAS). See [`docs/references.md`](docs/references.md).

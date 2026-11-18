@@ -33,7 +33,6 @@ exclude_patterns = [
     "Thumbs.db",
     ".DS_Store",
     "requirements.txt",
-    "INPUT_SCHEMA.md",  # stub redirect; content lives in inputs.md
 ]
 
 html_theme = "sphinx_rtd_theme"
