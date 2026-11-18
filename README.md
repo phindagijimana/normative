@@ -1,71 +1,67 @@
 # Normative modelling toolkit
 
 Reusable tools for applying published brain-morphometry normative models
-(CentileBrain MFP / GAMLSS and PCN Toolkit) and for running a structural
-connectome normative analysis. The IDEAS epilepsy cohort is the worked
-example; the same entry points accept your own tables when they match the
-documented schemas.
+(CentileBrain MFP / GAMLSS and PCN Toolkit) and for structural-connectome
+normative analysis. IDEAS is the worked example; the same entry points accept
+your own data when schemas match.
+
+**Documentation (Read the Docs style):** see [`docs/`](docs/index.md) — build
+locally with Sphinx, or enable the project on
+[Read the Docs](https://readthedocs.org/) (config: [`.readthedocs.yaml`](.readthedocs.yaml)).
+
+[![Documentation](https://img.shields.io/badge/docs-Sphinx%20%2F%20RTD-blue)](docs/index.md)
+[![Source](https://img.shields.io/badge/source-GitHub-black)](https://github.com/phindagijimana/normative)
 
 ## Choose a path
 
 | Goal | Start here |
 |---|---|
-| Score **one FreeSurfer subject** → PDF + Z-scores | [`normreport/`](normreport/README.md) |
-| Score a **cohort table** (IDEAS or your own) | [`SETUP.md`](SETUP.md) → [`score/`](score/README.md) |
-| Build / understand the **IDEAS** working table | [`ideas_data/`](ideas_data/README.md) |
-| Structural **connectome** normative modelling | [`connectome_normative/`](connectome_normative/README.md) |
-| Input column contracts | [`docs/INPUT_SCHEMA.md`](docs/INPUT_SCHEMA.md) |
+| Full docs (install, usage, methods) | [`docs/index.md`](docs/index.md) |
+| Score **one FreeSurfer subject** → PDF | [`normreport/`](normreport/README.md) |
+| Score a **cohort table** | [`docs/usage/morphometry.md`](docs/usage/morphometry.md) |
+| Structural **connectome** modelling | [`docs/usage/connectome.md`](docs/usage/connectome.md) |
+| Input column contracts | [`docs/inputs.md`](docs/inputs.md) |
+| Short methods / science | [`docs/methods.md`](docs/methods.md) |
 
 ## Quick start (IDEAS morphometry)
 
 ```bash
-# 1. Dependencies + model clones — see SETUP.md
 pip install -r requirements.txt
 # R: install.packages(c("mfp", "gamlss", "gamlss.dist"))
+# clone CentileBrain (+ optional PCN) — see docs/installation.md
 
-# 2. IDEAS working table
-cd ideas_data && python3 fetch_figshare.py && python3 fetch_resection.py && python3 load_ideas.py && cd ..
-
-# 3. Score three backends
+cd ideas_data && python3 fetch_figshare.py && python3 load_ideas.py && cd ..
 Rscript score/score_centilebrain.R
 Rscript score/score_centilebrain_gamlss.R
 python3 score/score_pcn_toolkit.py
 ```
 
-## Quick start (your own morphometry cohort)
-
-1. Build a CSV matching [`docs/INPUT_SCHEMA.md`](docs/INPUT_SCHEMA.md)
-   (required: `subject_id`, `cohort`, `sex`, `age`, region columns; controls
-   must use `cohort=control` for site adaptation).
-2. Point the scorers at it:
+## Quick start (your own cohort)
 
 ```bash
-Rscript score/score_centilebrain.R --input /path/to/cohort.csv --out-dir /path/to/out
-Rscript score/score_centilebrain_gamlss.R --input /path/to/cohort.csv --out-dir /path/to/out
-python3 score/score_pcn_toolkit.py --input /path/to/cohort.csv --out-dir /path/to/out
+Rscript score/score_centilebrain.R --input cohort.csv --out-dir out/
+python3 score/score_pcn_toolkit.py --input cohort.csv --out-dir out/
 ```
 
-Or score one subject at a time with `normreport` and a site-matched
-`--reference` control table.
+Schema: [`docs/inputs.md`](docs/inputs.md).
 
-## Quick start (connectome)
+## Build the docs site locally
 
 ```bash
-python3 connectome_normative/multiscale_normative.py --demo --out /tmp/connectome_demo
-python3 connectome_normative/multiscale_normative.py --help
+pip install -r docs/requirements.txt
+sphinx-build -b html docs docs/_build/html
+# open docs/_build/html/index.html
 ```
 
 ## Layout
 
 ```
-├── README.md                 # this file
-├── SETUP.md                  # OS, R/Python, CentileBrain + PCN clones
-├── requirements.txt          # Python deps for score/ + connectome + ideas_data
-├── docs/INPUT_SCHEMA.md      # cohort + connectome input contracts
-├── ideas_data/               # download + merge IDEAS tabular inputs
-├── score/                    # cohort scorers + optional IDEAS analyses
+├── docs/                     # Sphinx / Read the Docs site
+├── SETUP.md                  # short install mirror (see docs/installation.md)
+├── ideas_data/               # IDEAS download + merge
+├── score/                    # cohort scorers + optional analyses
 ├── normreport/               # single-subject CLI + container
-└── connectome_normative/     # edge/node/sublobe connectome normative scripts
+└── connectome_normative/     # connectome normative scripts
 ```
 
 ## References

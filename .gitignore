@@ -1,3 +1,6 @@
+# Sphinx / Read the Docs build output
+docs/_build/
+
 # Claude Code agent state
 .claude/
 

@@ -3,6 +3,9 @@
 What a fresh workstation needs to run the morphometry scorers, IDEAS
 downloaders, connectome scripts, and (optionally) `normreport`.
 
+Full documentation (Sphinx / Read the Docs): see [`docs/installation.md`](docs/installation.md)
+and [`docs/index.md`](docs/index.md).
+
 ## System
 
 - **OS:** Linux (tested on RHEL 9); macOS usually works for scoring if
