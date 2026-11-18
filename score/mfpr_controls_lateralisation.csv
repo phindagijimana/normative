@@ -1,0 +1,2 @@
+n,accuracy_with,accuracy_without,n_with_only_correct,n_without_only_correct,n_both_correct,mcnemar_p
+442,0.5882352941176471,0.49095022624434387,106,63,154,0.001169785578130776

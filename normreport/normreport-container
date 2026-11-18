@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# normreport-container — thin wrapper that runs normreport inside its
+# Apptainer/Singularity container with the parent Normative repo
+# bind-mounted at /work.
+#
+# Usage:
+#   normreport-container SUBJECT_CSV --age Y --sex M|F --output DIR [...]
+#
+# The wrapper resolves the container image and the repo bind-mount
+# from the environment or from sensible defaults, then forwards the
+# rest of the arguments to the containerised CLI unchanged. The user
+# can override every choice via the environment variables listed below.
+#
+# Environment variables:
+#   NORMREPORT_SIF        path to normreport.sif          (default: alongside this script)
+#   NORMREPORT_REPO_ROOT  parent Normative repo to bind   (default: two levels up from the .sif)
+#   NORMREPORT_RUNTIME    apptainer | singularity         (default: apptainer if in PATH else singularity)
+#
+# For the alternative native (non-container) deployment, use plain
+# `normreport` — the same CLI as here, just without the wrapper.
+
+set -euo pipefail
+
+if [[ $# -lt 1 ]]; then
+    cat <<'HELP'
+normreport-container — run normreport inside its container.
+
+Usage:
+    normreport-container SUBJECT_CSV --age Y --sex M|F --output DIR [--backend ...]
+
+Environment overrides (all optional):
+    NORMREPORT_SIF        path to normreport.sif
+    NORMREPORT_REPO_ROOT  parent Normative repo to bind at /work
+    NORMREPORT_RUNTIME    apptainer | singularity
+
+For the native (non-container) mode use plain `normreport` — same CLI.
+HELP
+    exit 1
+fi
+
+# --- Resolve paths -------------------------------------------------
+this_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+sif="${NORMREPORT_SIF:-$this_dir/normreport.sif}"
+repo_root="${NORMREPORT_REPO_ROOT:-$( cd "$this_dir/.." && pwd )}"
+
+if [[ ! -f "$sif" ]]; then
+    cat >&2 <<HERE
+normreport-container: image not found at
+    $sif
+
+Build it first (rootless, ~10 min):
+    cd "$this_dir"
+    APPTAINER_TMPDIR=\$HOME/apptainer_tmp \\
+    PROOT_TMP_DIR=\$HOME/apptainer_tmp \\
+      apptainer build --fakeroot normreport.sif Singularity.def
+
+Or set NORMREPORT_SIF to point at an already-built image, e.g.:
+    NORMREPORT_SIF=/path/to/normreport.sif normreport-container ...
+
+Alternatively, run in native (non-container) mode with:
+    pip install --user -e "$repo_root/normreport"
+    normreport ...
+HERE
+    exit 2
+fi
+
+# --- Runtime -------------------------------------------------------
+runtime="${NORMREPORT_RUNTIME:-}"
+if [[ -z "$runtime" ]]; then
+    if command -v apptainer >/dev/null 2>&1; then
+        runtime=apptainer
+    elif command -v singularity >/dev/null 2>&1; then
+        runtime=singularity
+    else
+        echo "normreport-container: neither apptainer nor singularity found in PATH" >&2
+        exit 3
+    fi
+fi
+
+# --- Translate host paths in the argument list ---------------------
+# Any positional argument or --output value that lives under the repo
+# root is rewritten to its /work equivalent so the containerised CLI
+# sees the same file the user typed on the host.
+translated=()
+next_is_output=false
+for arg in "$@"; do
+    if [[ "$next_is_output" == true ]]; then
+        # Output dir usually lives outside the repo — leave it alone.
+        translated+=("$arg")
+        next_is_output=false
+        continue
+    fi
+    case "$arg" in
+        --output|-o)
+            translated+=("$arg")
+            next_is_output=true
+            ;;
+        "$repo_root"/*)
+            # Rewrite host path -> /work path
+            translated+=("/work${arg#$repo_root}")
+            ;;
+        *)
+            translated+=("$arg")
+            ;;
+    esac
+done
+
+exec "$runtime" run \
+    --bind "$repo_root":/work \
+    "$sif" \
+    "${translated[@]}"

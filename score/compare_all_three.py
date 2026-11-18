@@ -1,11 +1,14 @@
 """Three-backend comparison: MFP vs GAMLSS vs PCN Toolkit on cortical
 thickness (the common intersection of what all three backends score).
 
-Runs the same four validation tasks as compare_mfp_gamlss.py:
+Runs the same validation tasks as compare_mfp_gamlss.py on thickness:
   Task 5 — Control Z SD per algorithm
-  Task 6 — Convergence with IDEAS internal ComBat Z-scores
-  Task 7 — SVC classification (deferred; use existing task7_aucs)
+  Task 6 — Pearson r vs IDEAS internal ComBat Z-scores (not backend vs backend)
+  Task 7 — SVC classification: see classify_all_three.py
   Task 8 — Resection concordance (three-way)
+
+Pairwise Pearson r of Z-scores (MFP–GAMLSS, MFP–PCN, GAMLSS–PCN) is
+pairwise_z_pearson.py, not this script.
 """
 from pathlib import Path
 import numpy as np

@@ -1,0 +1,4 @@
+algo,threshold,n_controls,n_regions,median_frac_|Z|>1.96,mean_frac_|Z|>1.96,min_frac,max_frac,expected_under_N01
+GAMLSS,1.96,100,68,0.04,0.056470588235294106,0.0,0.13,0.05
+MFP,1.96,100,68,0.05,0.0614705882352941,0.01,0.15,0.05
+PCN,1.96,100,68,0.03,0.028970588235294116,0.0,0.08,0.05

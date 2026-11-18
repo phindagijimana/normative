@@ -1,0 +1,4 @@
+backend,n,mean_rho,ci_lo,ci_hi,feature_set
+CentileBrain-MFP,430,0.07908843602348757,0.06632962798176616,0.09163392710456054,150 regions
+CentileBrain-GAMLSS,430,0.07446220671152626,0.060787343002260685,0.08850663444411072,150 regions
+PCN Toolkit-Bayesian,430,0.0446575480006804,,,68 regions (per-subject data not exported)

@@ -36,7 +36,19 @@ import numpy as np
 import pandas as pd
 
 
-REPO_ROOT = Path(__file__).resolve().parent.parent.parent  # normative/
+# Locate the parent Normative repo (which ships the R scoring scripts
+# under score/ and the CentileBrain + PCN model bundles). The default
+# assumes a source-tree layout (normreport/normreport/backends.py three
+# levels below the repo root). When normreport is pip-installed —
+# especially inside the Singularity/Apptainer container, where the
+# package lives under site-packages — this default breaks. Override
+# with the NORMREPORT_REPO_ROOT environment variable; the container's
+# runscript documents binding the host repo at /work and setting the
+# variable accordingly.
+REPO_ROOT = Path(
+    os.environ.get("NORMREPORT_REPO_ROOT")
+    or Path(__file__).resolve().parent.parent.parent
+)
 
 
 @dataclass
@@ -425,10 +437,15 @@ class PCNBayesian(NormativeBackend):
             warnings_out.append(
                 f"PCN Toolkit: {fail - 3} further IDP failures suppressed."
             )
+        # Preserve the schema even when every IDP failed so downstream
+        # consumers can select the standard columns without a KeyError.
+        long_df = (pd.DataFrame(results) if results
+                   else pd.DataFrame(columns=[
+                       "measure", "region", "observed", "z_adapted"]))
         return ScoringResult(
             backend_name=self.name,
             reference_cohort_id=self.reference_cohort_id,
-            long_df=pd.DataFrame(results),
+            long_df=long_df,
             warnings=warnings_out,
         )
 

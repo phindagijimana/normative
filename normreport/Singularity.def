@@ -1,16 +1,19 @@
 Bootstrap: docker
-From: rocker/r-ver:4.3.2
+From: rocker/r-ver:4.4.0
 
 %labels
     Maintainer phindagijimana
     Version    0.1.0
     Purpose    Multi-backend normative brain-morphometry report generator
 
+%files
+    . /opt/normreport
+
 %post
     set -eux
     apt-get update
     apt-get install -y --no-install-recommends \
-        python3 python3-pip python3-dev \
+        python3 python3-pip python3-dev python3-venv \
         libcurl4-openssl-dev libssl-dev libxml2-dev \
         libcairo2-dev libxt-dev \
         git ca-certificates
@@ -20,26 +23,30 @@ From: rocker/r-ver:4.3.2
     R -e "install.packages(c('mfp', 'gamlss', 'gamlss.dist'), \
           repos='https://cloud.r-project.org')"
 
-    # Python deps
-    pip3 install --no-cache-dir --break-system-packages \
-        pandas numpy scipy matplotlib reportlab click pytest
+    # Upgrade pip/setuptools/wheel so pyproject.toml is read correctly.
+    pip3 install --no-cache-dir --upgrade pip setuptools wheel
 
-    # normreport package (mount host repo at /opt/normative)
-    mkdir -p /opt/normreport
-    # (during build we don't copy the source; runtime uses bind-mount)
+    # Install normreport + its dependencies (including pcntoolkit)
+    # from the copied source under /opt/normreport.
+    pip3 install --no-cache-dir /opt/normreport
 
 %environment
     export LC_ALL=C.UTF-8
     export LANG=C.UTF-8
     export R_LIBS_USER=/usr/local/lib/R/site-library
+    # normreport locates the R scoring scripts + model bundles under
+    # this path; users bind-mount the parent Normative repo at /work
+    # so the pip-installed package can reach them.
+    export NORMREPORT_REPO_ROOT=/work
 
 %runscript
-    # Expects the normative repo bind-mounted at /work
-    # Usage:
-    #   singularity run --bind /path/to/normative:/work \
+    # Bind-mount the wider Normative repo at /work so the container
+    # can reach the CentileBrain and PCN Toolkit model bundles and the
+    # R scoring scripts they wrap. Example:
+    #   apptainer run --bind /path/to/Normative:/work \
     #       normreport.sif /work/normreport/examples/demo_subject_stats.csv \
     #       --age 22 --sex M --output /tmp/normreport_out
-    exec python3 -m normreport.cli "$@"
+    exec normreport "$@"
 
 %help
     normreport — multi-backend normative brain-morphometry report generator.
@@ -47,9 +54,17 @@ From: rocker/r-ver:4.3.2
     backends in a single per-patient PDF report with cross-backend
     consensus/disagreement flagging.
 
-    Build:  sudo singularity build normreport.sif Singularity.def
-    Run:    singularity run --bind $(pwd):/work normreport.sif \
-                /work/examples/demo_subject_stats.csv \
-                --age 22 --sex M --output /tmp/out
+    Build (rootless):
+        apptainer build --fakeroot normreport.sif Singularity.def
+    Build (with sudo):
+        sudo singularity build normreport.sif Singularity.def
+
+    Run (the parent Normative repo must be bind-mounted so the container
+    can reach the CentileBrain and PCN Toolkit model bundles and the
+    R scoring scripts):
+        apptainer run --bind /path/to/Normative:/work \
+                      normreport.sif \
+                      /work/normreport/examples/demo_subject_stats.csv \
+                      --age 22 --sex M --output /tmp/out
 
     For research use only. See README.md for full documentation.

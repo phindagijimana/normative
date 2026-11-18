@@ -25,6 +25,7 @@ dependencies = [
     "matplotlib>=3.4",
     "reportlab>=3.6",
     "click>=8.0",
+    "pcntoolkit>=0.27,<1.0",
 ]
 
 [project.optional-dependencies]

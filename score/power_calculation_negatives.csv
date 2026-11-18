@@ -1,0 +1,7 @@
+task,feature,n_pos,n_neg,observed_auc,se_auc,min_detectable_delta_auc,power,alpha
+Task 7 — epilepsy vs control,MFP-Z,442,100,0.797,0.02089926966901597,0.08280373846199195,0.8,0.05
+Task 7 — epilepsy vs control,GAMLSS-Z,442,100,0.796,0.020961542246973035,0.08305046489502878,0.8,0.05
+Task 7 — epilepsy vs control,Raw morphometry,442,100,0.794,0.021085529638856335,0.08354170787780678,0.8,0.05
+Task 6 — one-year seizure freedom,MFP-Z,245,182,0.525,0.028169566654061392,0.1116089445588926,0.8,0.05
+Task 6 — one-year seizure freedom,GAMLSS-Z,245,182,0.524,0.028175728729482277,0.11163335894703223,0.8,0.05
+Task 6 — one-year seizure freedom,Raw morphometry,245,182,0.517,0.028214993928962807,0.11178892923058448,0.8,0.05

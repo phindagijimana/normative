@@ -28,7 +28,23 @@ mechanism with the same controls as the adaptation set.
 | File | Purpose | Reads | Writes |
 |---|---|---|---|
 | `compare_mfp_gamlss.py` | 2-way MFP vs GAMLSS across Tasks 5–8 | The two CentileBrain Z-score CSVs | `task5_control_sd_mfp_vs_gamlss.csv`, `head_to_head_mfp_vs_gamlss_correlation.csv`, `task7_aucs_mfp_vs_gamlss.csv`, `task8_resection_rho_mfp_vs_gamlss.csv` |
-| `compare_all_three.py` | 3-way MFP vs GAMLSS vs PCN across Tasks 5, 6, 8 (cortical thickness, the common intersection) | All three backends' Z-score CSVs | `task5_three_backend_control_sd.csv`, `task6_three_backend_convergence.csv`, `task8_three_backend_resection.csv` |
+| `compare_all_three.py` | 3-way MFP vs GAMLSS vs PCN across Tasks 5, 6, 8 (cortical thickness, the common intersection). Does **not** compute pairwise Z–Z *r*. | All three backends' Z-score CSVs | `task5_three_backend_control_sd.csv`, `task6_three_backend_convergence.csv` (alias: `pearson_r_vs_ideas_summary.csv`), `task8_three_backend_resection.csv` |
+| `pairwise_z_pearson.py` | All 3 backend pairs: Pearson *r* of patient Z-scores | All three Z-score CSVs | `pearson_r_mfp_vs_gamlss.csv`, `pearson_r_mfp_vs_pcn_thickness.csv`, `pearson_r_gamlss_vs_pcn_thickness.csv`, `pearson_r_all_pairs_thickness.csv`, `pearson_r_all_pairs_summary.csv` |
+| `classify_all_three.py` | Task 7 AUC, all three backends, thickness only | All three Z-score CSVs | `task7_aucs_all_backends_thickness.csv`, `_summary.csv`, `_delta.csv` |
+| `compare_three_summary.py` | Fair three-way stack (SD, vs-IDEAS, AUC, resection, pairwise *r*) | Existing compare CSVs + Z-scores | `compare_three_summary.csv`, `compare_three_pairs.csv`, `task8_resection_all_backends_thickness.csv` |
+| `compare_three_extra.py` | Lateralisation, \|Z\|>1.96 call agreement, control tail rate | All three Z-score CSVs + metadata | `lateralization_all_backends_thickness.csv`, `abnormality_agreement_thickness.csv`, `control_tail_rate_thickness.csv`, `compare_three_extra_summary.csv` |
+
+**Which comparison file to use — do not delete the others.**
+
+- **All three backends (fair, 68 thickness regions):** `compare_three_summary.csv` (SD, vs-IDEAS, AUC, resection) and `compare_three_extra_summary.csv` (laterality, control tails). Call agreement: `abnormality_agreement_thickness.csv`. Also under `CentileShare/compare/`.
+- **MFP vs GAMLSS only (150 regions):** `*_mfp_vs_gamlss*` files. Laterality 67%/65% is `lateralization_results.csv` — not comparable to thickness-only ~58%.
+- **Do not use as a three-way:** `task8_three_backend_resection.csv` (MFP/GAMLSS not thickness-restricted). Keep the file; use `task8_resection_all_backends_thickness.csv` instead.
+- **Aliases (same numbers, two names):** `head_to_head_mfp_vs_gamlss_correlation.csv` = `pearson_r_mfp_vs_gamlss.csv`; `task6_three_backend_convergence.csv` = `pearson_r_vs_ideas_summary.csv` (that one is each backend **vs IDEAS**, not vs each other); `ideas_vs_centilebrain_corr.csv` = `pearson_r_mfp_vs_ideas.csv`.
+- Full mapping: `CentileShare/compare/README.md`.
+- **Hypothesis (controls unnecessary):** rejected for MFP. `CentileShare/hypothesis/README.md`. `mu_hat` is estimated from controls, not a replacement for them.
+- **Figures:** `CentileShare/compare/figures/` (`plot_figures.py`).
+- **extras in compare/:** `mu_hat` robustness + 150-region laterality
+  (`CentileShare/compare/extras/`).
 
 ## 3. `mu_hat` robustness suite (Tests 1 and 2 in `../mu_hat.md`)
 
@@ -36,11 +52,11 @@ mechanism with the same controls as the adaptation set.
 |---|---|---|---|
 | `mu_hat_cross_validation.R` | Test 1: K-fold cross-validation of the adaptation procedure | Same as the scoring scripts | `mu_hat_cv_results.csv` |
 | `mu_hat_sample_size_sensitivity.R` | Test 2: `mu_hat` variance at N ∈ {10, 20, 30, 50, 75, 100} | Same | `mu_hat_sample_size_variance.csv` |
+| `MU_HAT_ROBUSTNESS.md` | Interpretation + implications for the paper and the tool | — | Read this to understand the two tests |
 
 **Key finding:** held-out control Z has median absolute mean 0.002 and
 median SD 1.02–1.13; `mu_hat` stabilises at N ≥ 30 (SD ~0.11 on the
-Z-scale) and is near-deterministic by N = 50 (SD ~0.03). See
-`../mu_hat.md` for the site-adaptation methodology these tests validate.
+Z-scale) and is near-deterministic by N = 50 (SD ~0.03).
 
 ## 4. Task-specific analyses
 
@@ -56,9 +72,13 @@ Z-scale) and is near-deterministic by N = 50 (SD ~0.03). See
 
 | File | Output |
 |---|---|
-| `ideas_vs_centilebrain_corr.csv` | Per-region Pearson r, MFP vs IDEAS-internal, all measures |
-| `head_to_head_mfp_vs_gamlss_correlation.csv` | Per-region r, MFP vs GAMLSS (algorithm agreement) |
-| `task6_three_backend_convergence.csv` | Summary table of median r per backend vs IDEAS-internal |
+| `ideas_vs_centilebrain_corr.csv` / `pearson_r_mfp_vs_ideas.csv` | Per-region Pearson r, MFP vs IDEAS-internal, all measures |
+| `ideas_vs_all_backends_thickness_r.csv` / `pearson_r_vs_ideas_all_backends_thickness.csv` | Per-region r, MFP + GAMLSS + PCN vs IDEAS, thickness |
+| `head_to_head_mfp_vs_gamlss_correlation.csv` / `pearson_r_mfp_vs_gamlss.csv` | Per-region r, MFP vs GAMLSS (algorithm agreement) |
+| `pearson_r_mfp_vs_pcn_thickness.csv` | Per-region r, MFP vs PCN, thickness |
+| `pearson_r_gamlss_vs_pcn_thickness.csv` | Per-region r, GAMLSS vs PCN, thickness |
+| `pearson_r_all_pairs_thickness.csv` | Per-region r for all three pairs, thickness |
+| `task6_three_backend_convergence.csv` / `pearson_r_vs_ideas_summary.csv` | Summary of median r per backend **vs IDEAS** (not backend vs backend) |
 
 ### Task 7 — Epilepsy vs control classification
 
@@ -66,7 +86,11 @@ Z-scale) and is near-deterministic by N = 50 (SD ~0.03). See
 |---|---|
 | `classify_epilepsy.py` | Linear-SVC benchmark, MFP Z vs raw morphometry |
 | `classification_aucs.csv` | Per-repeat AUCs across 100 × 5-fold CV |
-| `task7_aucs_mfp_vs_gamlss.csv` | Per-repeat AUCs, both algorithms |
+| `task7_aucs_mfp_vs_gamlss.csv` | Per-repeat AUCs, MFP vs GAMLSS, 150 regions |
+| `classify_all_three.py` | Linear-SVC, MFP + GAMLSS + PCN on 68 thickness regions |
+| `task7_aucs_all_backends_thickness.csv` | Per-repeat AUCs, all three backends |
+| `task7_aucs_all_backends_thickness_summary.csv` | Mean AUC + 95% CI |
+| `task7_aucs_all_backends_thickness_delta.csv` | Pairwise ΔAUC |
 
 ### Task 8 — Resection concordance
 
@@ -85,6 +109,7 @@ Z-scale) and is near-deterministic by N = 50 (SD ~0.03). See
 | `lateralization_results.csv` | Accuracy, sensitivity per side, chi-square p, per pathology (14 rows) |
 | `ilae_outcome_prediction.py` | Ridge logistic regression: preop Z-scores → ILAE-1 seizure-freedom AUC |
 | `ilae_outcome_aucs.csv` | AUC + 95% CI + ΔAUC (Z − raw) + permutation p per algorithm |
+| `CLINICAL_EXTENSIONS.md` | Interpretation + implications for the paper and the tool |
 
 ## 5. Per-subject Z-score outputs (the paper's Contribution #5)
 
@@ -119,6 +144,10 @@ python3 classify_epilepsy.py
 python3 resection_concordance.py
 python3 compare_mfp_gamlss.py
 python3 compare_all_three.py
+python3 pairwise_z_pearson.py   # all 3 pairwise Pearson r of Z-scores
+python3 classify_all_three.py   # Task 7 AUC, all three backends, thickness
+python3 compare_three_summary.py  # fair three-way summary table
+python3 compare_three_extra.py    # laterality, abnormal calls, control tails
 
 # mu_hat robustness (~5 min)
 Rscript mu_hat_cross_validation.R

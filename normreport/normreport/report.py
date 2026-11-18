@@ -58,12 +58,16 @@ def build_report(subject_id: str, age: float, sex: str,
     output_dir.mkdir(parents=True, exist_ok=True)
     pdf_path = output_dir / f"{subject_id}_report.pdf"
 
-    # Merge all backends' Z-scores into a wide table for the report
+    # Merge all backends' Z-scores into a wide table for the report.
+    # Skip backends whose ScoringResult was empty or missing the schema
+    # (e.g. PCN when the model bundle wasn't found on the bind-mount).
+    required = ["measure", "region", "observed", "z_adapted"]
     wide = None
     for backend_name, df in scored_dfs.items():
+        if df is None or len(df) == 0 or not set(required).issubset(df.columns):
+            continue
         z_col = f"z_{backend_name}"
-        piece = df[["measure", "region", "observed", "z_adapted"]].copy()
-        piece = piece.rename(columns={"z_adapted": z_col})
+        piece = df[required].copy().rename(columns={"z_adapted": z_col})
         if wide is None:
             wide = piece
         else:

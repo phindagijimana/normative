@@ -16,12 +16,16 @@ Ships with the accompanying validation manuscript. Scope:
 
 **Features**
 - Per-patient PDF report with cross-backend consensus/disagreement flagging
+- **Two deployment modes:**
+  - Native — `pip install --user -e normreport/` → `normreport ...` (plain Python)
+  - Containerised — `apptainer build --fakeroot normreport.sif Singularity.def` → `./normreport-container ...` (wrapper script auto-binds the parent repo and translates host paths for the containerised CLI)
 - CLI: `normreport <subject_csv> --age <y> --sex <MF> --output <dir>`
 - Bundled IDEAS-controls-2025 reference cohort (100 UK controls)
 - `--reference /path/` for local reference-cohort override
 - Site adaptation follows the PCN Toolkit protocol (Rutherford 2022)
 - Provenance stamp on every report (git SHA, backend versions, timestamp)
-- Singularity container definition (`Singularity.def`)
+- Singularity container definition (`Singularity.def`) + `normreport-container` shell wrapper
+- `NORMREPORT_REPO_ROOT` env-var override for pip-installed and containerised deployments (lets the pip-installed CLI find R scoring scripts and model bundles at a user-supplied path)
 - "For research use only" disclaimer on every report
 
 **Deferred to v1.1+**

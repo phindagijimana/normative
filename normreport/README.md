@@ -20,7 +20,7 @@ For a clinical-research pipeline that must run offline, produce
 audited reports, and provide a robustness check by comparing multiple
 normative-modelling approaches, this tool fills the gap.
 
-Full tool design: see `../tool_design/ARCHITECTURE.md`.
+Full narrative: see `../paper_planning/tool.md` in the parent repository.
 
 ## Backends shipped
 
@@ -36,29 +36,70 @@ Full tool design: see `../tool_design/ARCHITECTURE.md`.
    the PCN Toolkit's built-in mechanism with the reference cohort as
    the adaptation set.
 
-## Install (workstation)
+## Two deployment modes
+
+Pick whichever fits your workstation or clinical-research pipeline —
+both share the same CLI arguments, output layout, and scientific
+behaviour.
+
+### 1. Native (Python + R on the host)
 
 ```bash
 cd normreport
-pip install --user -e .
+pip install --user -e .            # requires Python ≥ 3.9 and R ≥ 4.0
+normreport examples/demo_subject_stats.csv \
+    --age 22 --sex M --subject-id demo \
+    --backend centilebrain_mfp,centilebrain_gamlss,pcn_bayesian \
+    --output /tmp/normreport_out
 ```
 
-Runtime dependencies: Python ≥ 3.9, R ≥ 4.0 with the `mfp` and `gamlss`
-packages installed. The R scripts and CentileBrain `.rds` model files
-must be reachable at the standard relative paths from the parent
-repository — the tool assumes a checkout of
+Runtime dependencies: Python ≥ 3.9 (3.11+ recommended so that
+`pcntoolkit>=1.0` installs cleanly), R ≥ 4.0 with the `mfp` and
+`gamlss` packages, plus a local checkout of
 [phindagijimana/normative](https://github.com/phindagijimana/normative)
 where `centilebrain/models/` and `score/score_centilebrain*.R` exist.
 
-## Quick start
+### 2. Containerised (Apptainer / Singularity)
+
+For clinical-research pipelines that require a fixed environment or
+whose hosts don't have R + Python + pcntoolkit installed:
 
 ```bash
-# Score a demo subject
-normreport examples/demo_subject_stats.csv \
+# a. build the image (once, ~10 min, ~700 MB or ~3.5 GB depending on
+#    the pcntoolkit line — see Singularity.def and CHANGELOG.md)
+cd normreport
+APPTAINER_TMPDIR=$HOME/apptainer_tmp \
+PROOT_TMP_DIR=$HOME/apptainer_tmp \
+  apptainer build --fakeroot normreport.sif Singularity.def
+
+# b. run via the packaged wrapper (auto-binds the parent repo at /work
+#    and translates host paths for you)
+./normreport-container examples/demo_subject_stats.csv \
     --age 22 --sex M --subject-id demo \
-    --backend centilebrain_mfp,centilebrain_gamlss \
+    --backend centilebrain_mfp,centilebrain_gamlss,pcn_bayesian \
     --output /tmp/normreport_out
 ```
+
+The `normreport-container` shell wrapper resolves the `.sif`, sets the
+required bind-mount, and forwards every other argument to the
+containerised CLI unchanged. Override any assumption with the
+environment variables listed in the wrapper's `--help` (`NORMREPORT_SIF`,
+`NORMREPORT_REPO_ROOT`, `NORMREPORT_RUNTIME`).
+
+### Which mode should I use?
+
+| | Native | Container |
+|---|---|---|
+| **Fastest to set up** | ✓ (pip install) | (~10 min container build first) |
+| **Reproducible across machines** | Same-versioned deps required | ✓ (SIF is byte-identical) |
+| **Air-gapped clinical hosts** | Needs R + Python + pcntoolkit installed | ✓ (single SIF file, no runtime pip installs) |
+| **Fits inside HPC / Slurm queues** | Needs module load + pip venv | ✓ (Apptainer is the standard) |
+| **Uses host FreeSurfer subject directories directly** | ✓ (no bind-mount needed) | Needs `--bind /path:/work` (the wrapper handles this) |
+
+**Recommended:** native for development and single-machine use;
+container for URMC / Newcastle / any HPC or clinical-research
+deployment where reproducibility across hosts matters more than
+setup speed.
 
 Output at `/tmp/normreport_out/demo/`:
 
@@ -104,15 +145,28 @@ Site adaptation follows the PCN Toolkit protocol (Rutherford et al.,
 *Nature Protocols* 2022) — see `../mu_hat.md` in the parent repository
 for the methodology note and the sample-size sensitivity results.
 
-## Singularity container
+## Singularity container (advanced)
 
-For deployment inside a credentialed clinical-research pipeline:
+The `Singularity.def` ships in this directory. Both rootless
+(`apptainer build --fakeroot`) and sudo-based (`sudo singularity
+build`) build paths are supported. See the *Two deployment modes*
+section above for the rootless recipe recommended for most users.
+
+If you prefer to call the container directly (bypassing the
+`normreport-container` wrapper), remember to bind-mount the parent
+`Normative` repo at `/work` and set `NORMREPORT_REPO_ROOT=/work`
+inside the container:
 
 ```bash
-sudo singularity build normreport.sif Singularity.def
-singularity run normreport.sif examples/demo_subject_stats.csv \
+apptainer run --bind $(pwd)/..:/work normreport.sif \
+    /work/normreport/examples/demo_subject_stats.csv \
     --age 22 --sex M --output /tmp/normreport_out
 ```
+
+The bundled `%environment` block in `Singularity.def` sets
+`NORMREPORT_REPO_ROOT=/work` automatically, so the tool can locate
+the R scoring scripts and the CentileBrain + PCN Toolkit model
+bundles on the bind-mount without extra flags.
 
 ## Tests
 
