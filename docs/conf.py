@@ -47,4 +47,13 @@ html_theme_options = {
     "titles_only": False,
 }
 
+# Sidebar + page header: "Edit on GitHub" / source repo link (sphinx_rtd_theme)
+html_context = {
+    "display_github": True,
+    "github_user": "phindagijimana",
+    "github_repo": "normative",
+    "github_version": "main",
+    "conf_py_path": "/docs/",
+}
+
 myst_heading_anchors = 3

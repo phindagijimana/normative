@@ -4,10 +4,8 @@ Morphometry Z-scores (CentileBrain / PCN), single-subject PDFs (`normreport`),
 and connectome normative contrasts. IDEAS is the worked example; same tools
 reuse on your data.
 
-```{image} https://img.shields.io/badge/source-phindagijimana%2Fnormative-blue
-:alt: Source
-:target: https://github.com/phindagijimana/normative
-```
+**Source code:** <https://github.com/phindagijimana/normative>  
+**This documentation:** <https://normative.readthedocs.io/>
 
 1. {doc}`installation`  
 2. {doc}`tutorials/index`  
@@ -35,4 +33,5 @@ building
 ```
 
 Wraps published morphometry models (does not retrain them).
-MIT license, research use only — see repository `LICENSE`.
+MIT license, research use only — see repository
+[LICENSE](https://github.com/phindagijimana/normative/blob/main/LICENSE).
