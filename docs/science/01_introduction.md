@@ -14,11 +14,11 @@ expected brain biology?” (Marquand et al., 2016, 2019).
 
 Learn, from a large **healthy** (or reference) sample, a predictive mapping
 
-\[
-y \mid x \sim f\big(\hat{\mu}(x),\, \hat{\sigma}(x),\, \ldots\big)
-\]
+$$
+y \mid x \sim f(\hat{\mu}(x),\ \hat{\sigma}(x),\ \ldots)
+$$
 
-where \(y\) is a brain feature and \(x\) are covariates (age, sex, …). A new
+where $y$ is a brain feature and $x$ are covariates (age, sex, …). A new
 person receives a **deviation score** (often a Z or a centile) relative to
 that mapping. Large deviations mean *atypical versus the chart*, not a
 clinical diagnosis by themselves (Rutherford et al., 2022).

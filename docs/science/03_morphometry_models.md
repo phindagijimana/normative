@@ -1,6 +1,6 @@
 # Morphometry model families in the literature
 
-Large public engines differ in **how** they model \(y \mid x\), but share the
+Large public engines differ in **how** they model $y \mid x$, but share the
 charting goal. Below is field-level vocabulary; software names are examples
 from papers, not install instructions.
 

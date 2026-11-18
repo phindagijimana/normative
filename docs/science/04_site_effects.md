@@ -17,7 +17,7 @@ model family (empirical mean offset vs model-native adaptation APIs).
 Practical themes across papers:
 
 - Match acquisition and preprocessing between adaptation controls and cases  
-- Prefer adequate control \(N\) (often tens per sex as a rule of thumb in
+- Prefer adequate control $N$ (often tens per sex as a rule of thumb in
   applied work; sensitivity analyses appear in protocol-oriented studies)  
 - Recheck that adapted controls land near mean 0, SD 1  
 
@@ -27,7 +27,7 @@ Practical themes across papers:
 |---|---|
 | Site adaptation of a normative model | Centre a published chart on a new site |
 | ComBat / neuroHarmonize | Harmonise features across sites (different estimator) |
-| Full retraining | Learn new \(\hat{\mu},\hat{\sigma}\) from scratch |
+| Full retraining | Learn new $\hat{\mu}$, $\hat{\sigma}$ from scratch |
 
 Choose based on data scale and whether a trusted public model already covers
 your phenotype (Ge et al., 2024; Rutherford et al., 2022).

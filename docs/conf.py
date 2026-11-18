@@ -16,11 +16,16 @@ extensions = [
 ]
 
 myst_enable_extensions = [
+    "amsmath",
     "colon_fence",
     "deflist",
     "dollarmath",
     "fieldlist",
 ]
+
+# Prefer $ / $$ in Markdown sources (rendered by dollarmath + MathJax).
+myst_dmath_allow_labels = True
+myst_dmath_double_inline = True
 
 source_suffix = {
     ".rst": "restructuredtext",

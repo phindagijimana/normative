@@ -13,4 +13,4 @@ python3 connectome_normative/multiscale_normative.py \
 Need matrices, labels (`name,hemi,base,sublobe`), covariates
 (`subject,group,age,sex,op_side` + `control` group).  
 Optional IDEAS outcomes: `ideas_covariates.py` (you still supply matrices).  
-Flags: {doc}`../usage/connectome`. Idea: {doc}`../methods`.
+Flags: {doc}`../usage/connectome`. Idea: {doc}`../science/06_network_models`.

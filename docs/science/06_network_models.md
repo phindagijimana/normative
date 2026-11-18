@@ -12,7 +12,7 @@ framework still applies).
 
 A pattern used in large functional-connectivity normative studies is:
 
-1. Score extreme edges (\|Z\| above a threshold)  
+1. Score extreme edges ($|Z|$ above a threshold)  
 2. Aggregate to **nodes** (e.g. deviation degree: how many extreme edges
    touch a region)  
 3. Aggregate to **networks** or spatial parcels  
